@@ -1,6 +1,6 @@
 use bevy::prelude::*;
-use gdnative::godot_print;
 use std::sync::{self, mpsc, Mutex};
+mod server_test;
 
 pub fn bevy(receiver: mpsc::Receiver<G2BMessage>) {
     App::build()
@@ -9,6 +9,7 @@ pub fn bevy(receiver: mpsc::Receiver<G2BMessage>) {
             receiver: Mutex::new(receiver),
         })
         .add_system(receive_handler.system())
+        .add_plugin(server_test::ServerTest)
         .run();
 }
 
@@ -41,7 +42,7 @@ fn receive_handler(
         if let Some(msg) = msg {
             match msg {
                 G2BMessage::Quite => {
-                    godot_print!("Bevy Terminal: Quite Message Reccived!");
+                    gdnative::godot_print!("Bevy Terminal: Quite Message Reccived!");
                     app_exit_events.send(bevy::app::AppExit);
                 }
             }
