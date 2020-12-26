@@ -1,15 +1,11 @@
-use super::gbevy::{self, G2BMessage};
 use gdnative::{api::Node, methods, NativeClass};
-use std::{
-    sync::mpsc,
-    thread::{self, JoinHandle},
-};
+mod gbevy;
 
 #[derive(NativeClass)]
 #[inherit(Node)]
 pub struct Game {
-    handle: Option<JoinHandle<()>>,
-    sender: Option<mpsc::Sender<G2BMessage>>,
+    handle: Option<std::thread::JoinHandle<()>>,
+    sender: Option<std::sync::mpsc::Sender<gbevy::G2BMessage>>,
 }
 
 #[methods]
@@ -22,18 +18,31 @@ impl Game {
     }
 
     #[export]
-    fn _ready(&mut self, _owner: &Node) {
-        let (tx, rx) = mpsc::channel();
+    fn _ready(&mut self, owner: &Node) {
+        let viewport;
+        unsafe {
+            viewport = owner
+                .get_tree()
+                .unwrap()
+                .assume_safe() // unsafe
+                .root()
+                .unwrap()
+                .assume_safe() // unsafe
+                .get_viewport_rid();
+        }
+
+        let (tx, receiver) = std::sync::mpsc::channel();
         self.sender = Some(tx);
-        self.handle = Some(thread::spawn(move || {
-            gbevy::bevy(rx);
+        let setup = gbevy::Setup { receiver, viewport };
+        self.handle = Some(std::thread::spawn(move || {
+            gbevy::bevy(setup);
         }));
     }
 
     #[export]
     fn _exit_tree(&mut self, _owner: &Node) {
         if let Some(sender) = self.sender.take() {
-            sender.send(G2BMessage::Quite).unwrap_or(());
+            sender.send(gbevy::G2BMessage::Quit).unwrap_or(());
         };
         if let Some(handle) = self.handle.take() {
             handle.join().unwrap_or(());

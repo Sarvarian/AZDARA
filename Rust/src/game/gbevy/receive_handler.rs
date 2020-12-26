@@ -1,32 +1,21 @@
+use super::{G2BMessage, Receiver};
 use bevy::prelude::*;
-use std::sync::{self, mpsc, Mutex};
-mod server_test;
+use std::sync::{self, mpsc};
 
-pub fn bevy(receiver: mpsc::Receiver<G2BMessage>) {
-    App::build()
-        .add_plugins(MinimalPlugins)
-        .add_resource(Terminal {
-            receiver: Mutex::new(receiver),
-        })
-        .add_system(receive_handler.system())
-        .add_plugin(server_test::ServerTest)
-        .run();
-}
+pub struct ReceiveHandler;
 
-pub enum G2BMessage {
-    Quite,
-}
-
-struct Terminal {
-    receiver: Mutex<mpsc::Receiver<G2BMessage>>,
+impl Plugin for ReceiveHandler {
+    fn build(&self, app: &mut AppBuilder) {
+        app.add_system(receive_handler.system());
+    }
 }
 
 fn receive_handler(
-    terminal: Res<Terminal>,
+    receiver: Res<Receiver>,
     mut app_exit_events: ResMut<Events<bevy::app::AppExit>>,
 ) {
     loop {
-        let msg = match terminal.receiver.try_lock() {
+        let msg = match receiver.try_lock() {
             Ok(receiver) => match receiver.try_recv() {
                 Ok(msg) => Some(msg),
                 Err(err) => match err {
@@ -41,8 +30,7 @@ fn receive_handler(
         };
         if let Some(msg) = msg {
             match msg {
-                G2BMessage::Quite => {
-                    gdnative::godot_print!("Bevy Terminal: Quite Message Reccived!");
+                G2BMessage::Quit => {
                     app_exit_events.send(bevy::app::AppExit);
                 }
             }

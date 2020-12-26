@@ -18,6 +18,10 @@ _global_script_class_icons={
 config/name="azdara"
 run/main_scene="res://main.tscn"
 
+[debug]
+
+settings/stdout/verbose_stdout=true
+
 [physics]
 
 2d/thread_model=2
