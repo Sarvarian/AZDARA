@@ -16,14 +16,19 @@ _global_script_class_icons={
 [application]
 
 config/name="azdara"
-run/main_scene="res://main.tscn"
+run/main_scene="res://aban/main/main.tscn"
 
 [debug]
 
 settings/stdout/verbose_stdout=true
 
+[editor_plugins]
+
+enabled=PoolStringArray( "smoothing" )
+
 [physics]
 
+common/physics_fps=5
 2d/thread_model=2
 
 [rendering]
