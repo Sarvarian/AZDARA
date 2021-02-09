@@ -1,8 +1,8 @@
 [gd_resource type="NativeScript" load_steps=2 format=2]
 
-[ext_resource path="res://lib/lib.tres" type="GDNativeLibrary" id=1]
+[ext_resource path="res://aban/lib/azdara.tres" type="GDNativeLibrary" id=1]
 
 [resource]
 resource_name = "Game"
-class_name = "Game"
+class_name = "Aban"
 library = ExtResource( 1 )
