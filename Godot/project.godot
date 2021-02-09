@@ -18,10 +18,6 @@ _global_script_class_icons={
 config/name="azdara"
 run/main_scene="res://aban/main/main.tscn"
 
-[autoload]
-
-Aban="*res://aban/aban.tscn"
-
 [debug]
 
 settings/stdout/verbose_stdout=true
