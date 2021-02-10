@@ -17,28 +17,13 @@ pub struct Game {
 impl Game {
     fn register(builder: &ClassBuilder<Self>) {
         builder.add_signal(Signal {
-            name: "second_pass",
-            args: &[],
-        });
-        builder.add_signal(Signal {
-            name: "minute_pass",
-            args: &[],
-        });
-        builder.add_signal(Signal {
-            name: "hour_pass",
-            args: &[],
-        });
-        builder.add_signal(Signal {
-            name: "day_pass",
-            args: &[],
-        });
-        builder.add_signal(Signal {
-            name: "month_pass",
-            args: &[],
-        });
-        builder.add_signal(Signal {
-            name: "year_pass",
-            args: &[],
+            name: "time_pass",
+            args: &[SignalArgument {
+                name: "time_passes",
+                default: Variant::from_byte_array(&TypedArray::from_vec(vec![0; 6])),
+                export_info: ExportInfo::new(VariantType::ByteArray),
+                usage: PropertyUsage::DEFAULT,
+            }],
         });
     }
 
@@ -63,6 +48,7 @@ impl Game {
     #[export]
     fn _process(&mut self, owner: &Node, _delta: f64) {
         self.time.process(owner);
+        // godot_print!("{}", self.time.get());
     }
 
     #[export]
@@ -74,8 +60,6 @@ impl Game {
             speed = 0.001;
         }
         self.time.speed = speed;
-        // if let Some(speed) = speed.try_to_f64() {
-        // }
     }
 
     #[export]
@@ -85,13 +69,15 @@ impl Game {
 
     #[export]
     fn skip_time_a_second(&mut self, _owner: &Node) {
-        self.time.skip_a_second();
+        let res = [0u8; 6];
+        self.time.increment_a_second(res);
     }
 
     #[export]
     fn skip_time_a_month(&mut self, _owner: &Node) {
+        let res = [0u8; 6];
         for _i in 0..(30 * 24 * 60 * 60) {
-            self.time.skip_a_second();
+            self.time.increment_a_second(res);
         }
     }
 }

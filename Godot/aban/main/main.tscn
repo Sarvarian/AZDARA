@@ -10,13 +10,18 @@ script/source = "extends Node
 func _ready() -> void:
 	pass
 
+
 func _process(_delta : float) -> void:
 	var label : Label = $CanvasLayer/Control/MarginContainer/HBoxContainer/VBoxContainer/OSTime
 	label.text = String(OS.get_ticks_usec())
 	pass
 
 
-func _on_Game_second_pass() -> void:
+func _input(_event : InputEvent) -> void:
+	pass
+
+
+func _on_Game_time_pass(_time_passes : PoolByteArray = [0,0,0,0,0,0]) -> void:
 	var timedate : PoolByteArray = $Game.get_timedate()
 	var msg : String = \"{}/{}/{} {}:{}:{}\".format([
 		timedate[5] + 1,
@@ -44,35 +49,37 @@ func skip_a_second() -> void:
 
 func _on_ASecond_pressed() -> void:
 	skip_a_second()
-	_on_Game_second_pass()
+	_on_Game_time_pass()
 	pass
 
 
 func _on_AMinute_pressed()-> void:
 	for _i in range(60):
 		skip_a_second()
-	_on_Game_second_pass()
+	_on_Game_time_pass()
 	pass
 
 
 func _on_AnHour_pressed():
 	for _i in range(60*60):
 		skip_a_second()
-	_on_Game_second_pass()
+	_on_Game_time_pass()
 	pass
 
 func _on_ADay_pressed():
 	for _i in range(24*60*60):
 		skip_a_second()
-	_on_Game_second_pass()
+	_on_Game_time_pass()
 	pass
 
 func _on_AMonth_pressed():
 #	for _i in range(30*24*60*60):
 #		skip_a_second()
 	$Game.skip_time_a_month()
-	_on_Game_second_pass()
+	_on_Game_time_pass()
 	pass
+
+
 "
 
 [sub_resource type="DynamicFontData" id=2]
@@ -205,7 +212,7 @@ margin_right = 460.0
 margin_bottom = 598.0
 custom_fonts/font = ExtResource( 2 )
 text = "Skip a Month"
-[connection signal="second_pass" from="Game" to="." method="_on_Game_second_pass" flags=3]
+[connection signal="time_pass" from="Game" to="." method="_on_Game_time_pass" flags=3]
 [connection signal="value_changed" from="CanvasLayer/Control/MarginContainer/HBoxContainer/VBoxContainer2/HSlider" to="." method="_on_HSlider_value_changed"]
 [connection signal="pressed" from="CanvasLayer/Control/MarginContainer/HBoxContainer/VBoxContainer2/ASecond" to="." method="_on_ASecond_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/MarginContainer/HBoxContainer/VBoxContainer2/AMinute" to="." method="_on_AMinute_pressed"]
