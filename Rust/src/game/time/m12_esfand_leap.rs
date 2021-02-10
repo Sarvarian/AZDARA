@@ -26,6 +26,7 @@ impl MonthTrait for EsfandLeap {
         if timedate.day > 30 {
             timedate.day -= 30;
             timedate.month = Box::new(Farvardin::new());
+            timedate.year += 1;
         }
     }
 
