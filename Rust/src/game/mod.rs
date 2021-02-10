@@ -61,15 +61,18 @@ impl Game {
     }
 
     #[export]
-    fn _process(&mut self, owner: &Node, delta: f64) {
-        self.time.process(owner, delta);
+    fn _process(&mut self, owner: &Node, _delta: f64) {
+        self.time.process(owner);
     }
 
     #[export]
     fn _exit_tree(&mut self, _owner: &Node) {}
 
     #[export]
-    fn set_game_speed(&mut self, _owner: &Node, speed: f64) {
+    fn set_game_speed(&mut self, _owner: &Node, mut speed: f64) {
+        if !(speed > 0f64) {
+            speed = 0.001;
+        }
         self.time.speed = speed;
         // if let Some(speed) = speed.try_to_f64() {
         // }
@@ -81,8 +84,15 @@ impl Game {
     }
 
     #[export]
-    fn skip_time_a_second(&mut self, owner: &Node) {
-        self.time.add_second(owner)
+    fn skip_time_a_second(&mut self, _owner: &Node) {
+        self.time.skip_a_second();
+    }
+
+    #[export]
+    fn skip_time_a_month(&mut self, _owner: &Node) {
+        for _i in 0..(30 * 24 * 60 * 60) {
+            self.time.skip_a_second();
+        }
     }
 }
 
