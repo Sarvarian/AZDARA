@@ -1,31 +1,12 @@
 use gdnative::prelude::*;
-use m01_farvardin::Farvardin;
-mod m10_dey;
-mod m11_bahman;
-mod m12_esfand;
-mod m12_esfand_leap;
-mod m01_farvardin;
-mod m02_ordibehesht;
-mod m03_khordad;
-mod m04_tir;
-mod m05_mordad;
-mod m06_shahrivar;
-mod m07_mehr;
-mod m08_aban;
-mod m09_azar;
 
 pub struct Time {
     counter: f64,
     pub speed: f64,
     os: &'static gdnative::api::OS,
     last_tick_time: i64,
-    // pub timedate: Vec<u8>,
-    second: u8,
-    minute: u8,
-    hour: u8,
-    day: u8,
-    month: u8,
-    year: u8,
+    timedate: TimeDate,
+    date_state: Box<dyn DateState>,
 }
 
 impl Time {
@@ -36,25 +17,13 @@ impl Time {
             speed: 1f64,
             os,
             last_tick_time: 0,
-            // timedate: vec![0,0,0,0,0,0]
-            second: 0,
-            minute: 0,
-            hour: 0,
-            day: 0,
-            month: 0,
-            year: 0,
+            timedate: TimeDate::new(),
+            date_state: Box::new(FirstHalf),
         }
     }
 
-    pub fn get(&self) -> [u8; 6] {
-        [
-            self.second,
-            self.minute,
-            self.hour,
-            self.day,
-            self.month,
-            self.year,
-        ]
+    pub fn timedate(&self) -> &TimeDate {
+        &self.timedate
     }
 
     pub fn process(&mut self, owner: &Node) {
@@ -77,74 +46,116 @@ impl Time {
 
     pub fn increment_a_second(&mut self, mut res: [u8; 6]) -> [u8; 6] {
         // Second
-        self.second += 1;
+        self.timedate.second += 1;
         res[0] += 1;
         // Minute
-        if !(self.second < 60) {
-            self.second -= 60;
-            self.minute += 1;
+        if !(self.timedate.second < 60) {
+            self.timedate.second -= 60;
+            self.timedate.minute += 1;
             res[1] += 1;
             // Hour
-            if !(self.minute < 60) {
-                self.minute -= 60;
-                self.hour += 1;
+            if !(self.timedate.minute < 60) {
+                self.timedate.minute -= 60;
+                self.timedate.hour += 1;
                 res[2] += 1;
                 // Day
-                if !(self.hour < 24) {
-                    self.hour -= 24;
-                    self.day += 1;
-                    res[3] += 1;
-                    // Month
-                    if self.month < 6 {
-                        if self.day == 31 {
-                            self.day -= 31;
-                            res = self.increment_a_month(res);
-                        }
-                    } else {
-                        if self.month < 11 {
-                            if self.day == 30 {
-                                self.day -= 30;
-                                res = self.increment_a_month(res);
-                            }
-                        } else {
-                            if self.year % 4 == 2 {
-                                if self.day == 30 {
-                                    self.day -= 30;
-                                    res = self.increment_a_month(res);
-                                }
-                            } else {
-                                if self.day == 29 {
-                                    self.day -= 29;
-                                    res = self.increment_a_month(res);
-                                }
-                            }
-                        }
-                    }
-                }
+                self.date_state.increment_a_day();
             }
-        }
-        res
-    }
-    fn increment_a_month(&mut self, mut res: [u8; 6]) -> [u8; 6] {
-        // Month
-        self.month += 1;
-        res[4] += 1;
-        // Year
-        if !(self.month < 12) {
-            self.month -= 12;
-            self.year += 1;
-            res[5] += 1;
         }
         res
     }
 }
 
-pub struct TimeDate {
+trait DateState {
+    fn increment_a_day(&self, time: &mut Time);
+    fn skip_a_month(&self, time: &mut Time);
+}
+
+struct FirstHalf;
+
+impl DateState for FirstHalf {
+    fn increment_a_day(&self, time: &mut Time) {
+        time.timedate.day += 1;
+        if time.timedate.day > 31 {
+            time.timedate.day -= 31;
+            time.timedate.month += 1;
+            if time.timedate.month > 6 {
+                time.date_state = Box::new(SecondHalf);
+            }
+        }
+    }
+
+    fn skip_a_month(&self, timedate: &mut Time) {
+        todo!()
+    }
+}
+
+struct SecondHalf;
+
+impl DateState for SecondHalf {
+    fn increment_a_day(&self, time: &mut Time) {
+        time.timedate.day += 1;
+        if time.timedate.day > 30 {
+            time.timedate.day -= 30;
+            time.timedate.month += 1;
+            if time.timedate.month > 11 {
+                if time.timedate.year % 4 == 3 {
+                    time.date_state = Box::new(EsfandLeap);
+                }
+                time.date_state = Box::new(Esfand);
+            }
+        }
+    }
+
+    fn skip_a_month(&self, time: &mut Time) {
+        todo!()
+    }
+}
+
+struct Esfand;
+
+impl DateState for Esfand {
+    fn increment_a_day(&self, time: &mut Time) {
+        time.timedate.day += 1;
+        if time.timedate.day > 29 {
+            time.timedate.day -= 29;
+            time.timedate.month += 1;
+            if time.timedate.month > 6 {
+                time.date_state = Box::new(FirstHalf);
+            }
+        }
+    }
+
+    fn skip_a_month(&self, time: &mut Time) {
+        todo!()
+    }
+}
+
+struct EsfandLeap;
+
+impl DateState for EsfandLeap {
+    fn increment_a_day(&self, time: &mut Time) {
+        time.timedate.day += 1;
+        if time.timedate.day > 30 {
+            time.timedate.day -= 30;
+            time.timedate.month += 1;
+            if time.timedate.month > 6 {
+                time.date_state = Box::new(FirstHalf);
+            }
+        }
+    }
+
+    fn skip_a_month(&self, time: &mut Time) {
+        todo!()
+    }
+}
+
+struct TimeDate {
     second: u8,
     minute: u8,
     hour: u8,
     day: u8,
-    month: Box<dyn MonthTrait>,
+    month: u8,
     year: u8,
 }
 
@@ -155,38 +166,30 @@ impl TimeDate {
             minute: 0,
             hour: 0,
             day: 1,
-            month: Box::new(Farvardin::new()),
+            month: 1,
             year: 1,
         }
     }
 
-    fn to_vec(&self) -> Vec<u8> {
+    pub fn to_vec(&self) -> Vec<u8> {
         vec![
             self.second,
             self.minute,
             self.hour,
             self.day,
-            self.month.num(),
+            self.month,
             self.year,
         ]
     }
 
-    fn get(&self) -> [u8; 6] {
+    pub fn arr(&self) -> [u8; 6] {
         [
             self.second,
             self.minute,
             self.hour,
             self.day,
-            self.month.num(),
+            self.month,
             self.year,
         ]
     }
-}
-
-trait MonthTrait {
-    fn num(&self) -> u8;
-    fn name_fa(&self) -> &'static str;
-    fn name_en(&self) -> &'static str;
-    fn increment_a_day(&self, timedate: &mut TimeDate);
-    fn skip_a_month(&self, timedate: &mut TimeDate);
 }

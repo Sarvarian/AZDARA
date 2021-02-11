@@ -64,7 +64,7 @@ impl Game {
 
     #[export]
     fn get_timedate(&self, _owner: &Node) -> Variant {
-        Variant::from_byte_array(&TypedArray::from_vec(self.time.get().to_vec()))
+        Variant::from_byte_array(&TypedArray::from_vec(self.time.timedate().to_vec()))
     }
 
     #[export]
