@@ -1,73 +1,31 @@
 pub struct Time {
+    pub speed: f64,
     counter: f64,
-    speed: f64,
-    pub timedate: TimaDate,
+    os: &'static gdnative::api::OS,
+    last_tick_time: i64,
 }
 
 impl Time {
     pub fn new() -> Self {
+        let os = gdnative::api::OS::godot_singleton();
         Time {
-            counter: 1f64,
             speed: 1f64,
-            timedate: TimaDate::new(),
+            counter: 1f64,
+            os,
+            last_tick_time: 0,
         }
     }
 
-    pub fn process(&mut self, delta: f64) {
+    pub fn process(&mut self) -> u8 {
+        let mut res = 0u8;
+        let this_tick_time = self.os.get_ticks_msec();
+        let delta = (this_tick_time - self.last_tick_time) as f64 / 1000f64;
         self.counter -= delta;
-        while !(self.counter > 0f64) {
-            self.counter = self.speed - self.counter;
-            self.timedate.add_second()
+        while self.counter < 0f64 {
+            self.counter += self.speed;
+            res += 1;
         }
-    }
-}
-
-pub struct TimaDate {
-    pub second: u8,
-    pub minute: u8,
-    pub hour: u8,
-    pub day: u8,
-    pub month: u8,
-    pub year: u8,
-}
-
-impl TimaDate {
-    fn new() -> Self {
-        TimaDate {
-            second: 0,
-            minute: 0,
-            hour: 0,
-            day: 0,
-            month: 0,
-            year: 0,
-        }
-    }
-
-    fn add_second(&mut self) {
-        self.second += 1;
-        if !(self.second < 60) {
-            self.second -= 60;
-            self.minute += 1;
-            // Hour
-            if !(self.minute < 60) {
-                self.minute -= 60;
-                self.hour += 1;
-                // Day
-                if !(self.hour < 24) {
-                    self.hour -= 24;
-                    self.day += 1;
-                    // Month
-                    if !(self.day < 30) {
-                        self.day -= 30;
-                        self.month += 1;
-                        // Year
-                        if !(self.month < 30) {
-                            self.month -= 30;
-                            self.year += 1;
-                        }
-                    }
-                }
-            }
-        }
+        self.last_tick_time = this_tick_time;
+        res
     }
 }
