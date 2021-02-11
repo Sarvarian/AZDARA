@@ -20,13 +20,15 @@ impl Game {
             name: "second_pass",
             args: &[],
         });
+        gbevy::GBevy::register(builder)
     }
 
-    fn new(_owner: &Node) -> Self {
+    fn new(owner: &Node) -> Self {
         let mut bevy = App::build();
         bevy.add_plugin(gbevy::GBevy);
         bevy.app.update();
         let time = Time::new();
+        gbevy::GBevy::ready(&bevy.app.world, owner);
         Game { bevy, time }
     }
 
@@ -39,8 +41,8 @@ impl Game {
     fn _process(&mut self, owner: &Node, _delta: f64) {
         for _i in 0..self.time.process() {
             owner.emit_signal("second_pass", &[]);
-            self.bevy_update(owner);
-            self.b2g_update();
+            self.bevy_update();
+            self.b2g_update(owner);
         }
     }
 
@@ -55,11 +57,13 @@ impl Game {
         self.time.speed = speed;
     }
 
-    fn bevy_update(&mut self, _owner: &Node) {
+    fn bevy_update(&mut self) {
         self.bevy.app.update();
     }
 
-    fn b2g_update(&self) {}
+    fn b2g_update(&self, owner: &Node) {
+        gbevy::GBevy::update(&self.bevy.app.world, owner)
+    }
 }
 
 enum G2BMessage {}
