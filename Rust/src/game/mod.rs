@@ -17,13 +17,8 @@ pub struct Game {
 impl Game {
     fn register(builder: &ClassBuilder<Self>) {
         builder.add_signal(Signal {
-            name: "time_pass",
-            args: &[SignalArgument {
-                name: "time_passes",
-                default: Variant::from_byte_array(&TypedArray::from_vec(vec![0; 6])),
-                export_info: ExportInfo::new(VariantType::ByteArray),
-                usage: PropertyUsage::DEFAULT,
-            }],
+            name: "second_pass",
+            args: &[],
         });
     }
 
@@ -60,25 +55,6 @@ impl Game {
             speed = 0.001;
         }
         self.time.speed = speed;
-    }
-
-    #[export]
-    fn get_timedate(&self, _owner: &Node) -> Variant {
-        Variant::from_byte_array(&TypedArray::from_vec(self.time.timedate().to_vec()))
-    }
-
-    #[export]
-    fn skip_time_a_second(&mut self, _owner: &Node) {
-        let res = [0u8; 6];
-        self.time.increment_a_second(res);
-    }
-
-    #[export]
-    fn skip_time_a_month(&mut self, _owner: &Node) {
-        let res = [0u8; 6];
-        for _i in 0..(30 * 24 * 60 * 60) {
-            self.time.increment_a_second(res);
-        }
     }
 }
 
