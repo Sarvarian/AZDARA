@@ -3,12 +3,12 @@ use gdnative::prelude::*;
 use std::sync::{mpsc, Mutex};
 mod time;
 use time::Time;
+mod gbevy;
 
 #[derive(NativeClass)]
 #[inherit(Node)]
 #[register_with(Self::register)]
 pub struct Game {
-    sender: std::sync::mpsc::Sender<G2BMessage>,
     bevy: bevy::app::AppBuilder,
     time: Time,
 }
@@ -23,16 +23,11 @@ impl Game {
     }
 
     fn new(_owner: &Node) -> Self {
-        let (tx, receiver) = std::sync::mpsc::channel();
         let mut bevy = App::build();
-        bevy.add_resource(Receiver(Mutex::new(receiver)));
+        bevy.add_plugin(gbevy::GBevy);
         bevy.app.update();
         let time = Time::new();
-        Game {
-            sender: tx,
-            bevy,
-            time,
-        }
+        Game { bevy, time }
     }
 
     #[export]
@@ -42,8 +37,11 @@ impl Game {
 
     #[export]
     fn _process(&mut self, owner: &Node, _delta: f64) {
-        self.time.process(owner);
-        // godot_print!("{}", self.time.get());
+        for _i in 0..self.time.process() {
+            owner.emit_signal("second_pass", &[]);
+            self.bevy_update(owner);
+            self.b2g_update();
+        }
     }
 
     #[export]
@@ -56,6 +54,12 @@ impl Game {
         }
         self.time.speed = speed;
     }
+
+    fn bevy_update(&mut self, _owner: &Node) {
+        self.bevy.app.update();
+    }
+
+    fn b2g_update(&self) {}
 }
 
 enum G2BMessage {}
