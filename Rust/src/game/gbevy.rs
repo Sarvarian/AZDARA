@@ -23,8 +23,6 @@ impl GBevy {
         });
     }
 
-    pub fn ready(world: &World, owner: &gdnative::prelude::Node) {}
-
     pub fn update(world: &World, owner: &gdnative::prelude::Node) {}
 }
 
