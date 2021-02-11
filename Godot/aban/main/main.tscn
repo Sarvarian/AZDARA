@@ -100,6 +100,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 6
 custom_fonts/font = ExtResource( 2 )
 text = "Time"
+align = 2
 
 [node name="OSTime" type="Label" parent="CanvasLayer/Control/MarginContainer/HBoxContainer/VBoxContainer"]
 margin_top = 455.0
@@ -109,6 +110,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 6
 custom_fonts/font = ExtResource( 2 )
 text = "Time"
+align = 2
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Control/MarginContainer/HBoxContainer"]
 margin_left = 464.0
