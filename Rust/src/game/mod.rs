@@ -4,7 +4,6 @@ use std::sync::{mpsc, Mutex};
 mod time;
 use time::Time;
 mod gbevy;
-mod state;
 
 #[derive(NativeClass)]
 #[inherit(Node)]
@@ -21,7 +20,7 @@ impl Game {
             name: "second_pass",
             args: &[],
         });
-        gbevy::GBevy::register(builder)
+        gbevy::register(builder)
     }
 
     fn new(_owner: &Node) -> Self {
@@ -59,7 +58,7 @@ impl Game {
 
     #[export]
     fn state(&self, _owner: &Node) -> Variant {
-        state::get_game_state_as_variant_object(&self.bevy.app.world)
+        gbevy::get_state(&self.bevy.app.world)
     }
 
     fn bevy_update(&mut self) {
@@ -67,7 +66,7 @@ impl Game {
     }
 
     fn b2g_update(&self, owner: &Node) {
-        gbevy::GBevy::update(&self.bevy.app.world, owner)
+        gbevy::update(&self.bevy.app.world, owner)
     }
 }
 
