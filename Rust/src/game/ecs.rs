@@ -12,8 +12,8 @@ pub struct ECSHandle {
 
 impl ECSHandle {
     pub fn new() -> Self {
-        let world = World::default();
-        let schedule = Schedule::builder().build();
+        let world = sys::make_world();
+        let schedule = sys::make_schedule();
         ECSHandle { world, schedule }
     }
 
