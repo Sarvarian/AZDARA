@@ -1,16 +1,16 @@
-use bevy::prelude::App;
+use ecs::ECSHandle;
 use gdnative::prelude::*;
 use std::sync::{mpsc, Mutex};
 use time::Time;
 
-mod gbevy;
+mod ecs;
 mod time;
 
 #[derive(NativeClass)]
 #[inherit(Node)]
 #[register_with(Self::register)]
 pub struct Game {
-    bevy: bevy::app::AppBuilder,
+    ecs_handle: ECSHandle,
     time: Time,
 }
 
@@ -21,15 +21,13 @@ impl Game {
             name: "second_pass",
             args: &[],
         });
-        gbevy::register(builder)
+        ECSHandle::register(builder)
     }
 
     fn new(_owner: &Node) -> Self {
-        let mut bevy = App::build();
-        bevy.add_plugin(gbevy::GBevy);
-        bevy.app.update();
+        let mut ecs_handle = ECSHandle::new();
         let time = Time::new();
-        Game { bevy, time }
+        Game { ecs_handle, time }
     }
 
     #[export]
@@ -41,8 +39,7 @@ impl Game {
     fn _process(&mut self, owner: &Node, _delta: f64) {
         for _i in 0..self.time.process() {
             owner.emit_signal("second_pass", &[]);
-            self.bevy.app.update();
-            gbevy::update(&self.bevy.app.world, owner)
+            self.ecs_handle.update(owner);
         }
     }
 
@@ -59,7 +56,7 @@ impl Game {
 
     #[export]
     fn state(&self, _owner: &Node) -> Variant {
-        gbevy::get_state(&self.bevy.app.world)
+        self.ecs_handle.get_state()
     }
 }
 
