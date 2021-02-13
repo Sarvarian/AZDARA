@@ -11,5 +11,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 gdnative = "0.9.3"
-specs = { version = "0.16.1", features = ["specs-derive"] }
+legion = "0.3.1"
 euclid = "0.22.1"

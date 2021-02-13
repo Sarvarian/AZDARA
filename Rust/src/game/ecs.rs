@@ -1,18 +1,20 @@
 use euclid::*;
 use gdnative::prelude::*;
-use specs::{World, WorldExt};
+use legion::*;
 
 mod com;
 mod sys;
 
 pub struct ECSHandle {
     world: World,
+    schedule: Schedule,
 }
 
 impl ECSHandle {
     pub fn new() -> Self {
-        let world = World::new();
-        ECSHandle { world }
+        let world = World::default();
+        let schedule = Schedule::builder().build();
+        ECSHandle { world, schedule }
     }
 
     pub fn register(builder: &ClassBuilder<super::Game>) {
