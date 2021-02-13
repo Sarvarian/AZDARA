@@ -15,5 +15,9 @@ pub fn make_schedule() -> Schedule {
     Schedule::builder().build()
 }
 
+pub fn make_resources() -> Resources {
+    Resources::default()
+}
+
 #[system(for_each)]
 pub fn test(entity: &Entity) {}

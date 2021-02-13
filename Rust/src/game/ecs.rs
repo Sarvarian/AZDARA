@@ -1,20 +1,26 @@
 use euclid::*;
 use gdnative::prelude::*;
-use legion::{Schedule, World};
+use legion::{Resources, Schedule, World};
 
 mod com;
 mod sys;
 
 pub struct ECSHandle {
     world: World,
+    resources: Resources,
     schedule: Schedule,
 }
 
 impl ECSHandle {
     pub fn new() -> Self {
         let world = sys::make_world();
+        let resources = sys::make_resources();
         let schedule = sys::make_schedule();
-        ECSHandle { world, schedule }
+        ECSHandle {
+            world,
+            resources,
+            schedule,
+        }
     }
 
     pub fn register(builder: &ClassBuilder<super::Game>) {
@@ -40,5 +46,7 @@ impl ECSHandle {
         Variant::from_dictionary(&Dictionary::new().into_shared())
     }
 
-    pub fn update(&mut self, owner: &Node) {}
+    pub fn update(&mut self, owner: &Node) {
+        self.schedule.execute(&mut self.world, &mut self.resources);
+    }
 }
