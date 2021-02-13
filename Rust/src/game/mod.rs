@@ -1,9 +1,10 @@
 use bevy::prelude::App;
 use gdnative::prelude::*;
 use std::sync::{mpsc, Mutex};
-mod time;
 use time::Time;
+
 mod gbevy;
+mod time;
 
 #[derive(NativeClass)]
 #[inherit(Node)]
@@ -40,8 +41,8 @@ impl Game {
     fn _process(&mut self, owner: &Node, _delta: f64) {
         for _i in 0..self.time.process() {
             owner.emit_signal("second_pass", &[]);
-            self.bevy_update();
-            self.b2g_update(owner);
+            self.bevy.app.update();
+            gbevy::update(&self.bevy.app.world, owner)
         }
     }
 
@@ -59,14 +60,6 @@ impl Game {
     #[export]
     fn state(&self, _owner: &Node) -> Variant {
         gbevy::get_state(&self.bevy.app.world)
-    }
-
-    fn bevy_update(&mut self) {
-        self.bevy.app.update();
-    }
-
-    fn b2g_update(&self, owner: &Node) {
-        gbevy::update(&self.bevy.app.world, owner)
     }
 }
 
