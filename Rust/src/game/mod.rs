@@ -10,8 +10,8 @@ mod time;
 #[inherit(Node)]
 #[register_with(Self::register)]
 pub struct Game {
-    ecs_handle: ECSHandle,
     time: Time,
+    ecs_handle: ECSHandle,
 }
 
 #[methods]
@@ -25,9 +25,9 @@ impl Game {
     }
 
     fn new(_owner: &Node) -> Self {
-        let mut ecs_handle = ECSHandle::new();
         let time = Time::new();
-        Game { ecs_handle, time }
+        let ecs_handle = ECSHandle::new();
+        Game { time, ecs_handle }
     }
 
     #[export]

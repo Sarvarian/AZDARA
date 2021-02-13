@@ -1,6 +1,6 @@
 use euclid::*;
 use gdnative::prelude::*;
-use legion::*;
+use legion::{Schedule, World};
 
 mod com;
 mod sys;
