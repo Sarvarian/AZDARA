@@ -20,4 +20,4 @@ pub fn make_resources() -> Resources {
 }
 
 #[system(for_each)]
-pub fn test(entity: &Entity) {}
+pub fn test(_entity: &Entity) {}

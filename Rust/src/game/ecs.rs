@@ -1,14 +1,13 @@
 use euclid::*;
 use gdnative::prelude::*;
-use legion::{Resources, Schedule, World};
 
 mod com;
 mod sys;
 
 pub struct ECSHandle {
-    world: World,
-    resources: Resources,
-    schedule: Schedule,
+    world: legion::World,
+    resources: legion::Resources,
+    schedule: legion::Schedule,
 }
 
 impl ECSHandle {
@@ -24,6 +23,10 @@ impl ECSHandle {
     }
 
     pub fn register(builder: &ClassBuilder<super::Game>) {
+        builder.add_signal(Signal {
+            name: "game_updated",
+            args: &[],
+        });
         builder.add_signal(Signal {
             name: "spawn_player",
             args: &[SignalArgument {
@@ -48,5 +51,6 @@ impl ECSHandle {
 
     pub fn update(&mut self, owner: &Node) {
         self.schedule.execute(&mut self.world, &mut self.resources);
+        owner.emit_signal("game_updated", &[]);
     }
 }
