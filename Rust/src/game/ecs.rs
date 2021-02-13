@@ -1,6 +1,6 @@
 use euclid::*;
 use gdnative::prelude::*;
-use specs::world::{World, WorldExt};
+use specs::{World, WorldExt};
 
 mod com;
 mod sys;
