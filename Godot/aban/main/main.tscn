@@ -23,11 +23,12 @@ func _input(event : InputEvent) -> void:
 		save_game.store_line(state)
 		save_game.close()
 		var dic : Dictionary = parse_json(state)
-		print(dic)
-#		for k in dic.keys():
-#			print(k)
-#			for v in dic.values():
-#				print(v)
+		var entities : Dictionary = dic.entities
+#		print(dic)
+		for entity in entities.values():
+			var e : Dictionary = entity
+			if e.has(\"player\"):
+				$icon.position = Vector2(e.movable.x, e.movable.y) * 50
 	pass
 
 "
