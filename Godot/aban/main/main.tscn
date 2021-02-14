@@ -16,12 +16,18 @@ func _process(_delta : float) -> void:
 
 
 func _input(event : InputEvent) -> void:
-	if event.is_action(\"ui_accept\"):
-		var gs : Dictionary = $Game.state()
-		for key in gs.keys():
-			if key == \"Player\":
-				var pos : Vector2 = gs[key]
-				$icon.position = pos * 50;
+	if event.is_action_pressed(\"ui_accept\"):
+		var state : String = $Game.state()
+		var save_game = File.new()
+		save_game.open(\"user://savegame.json\", File.WRITE)
+		save_game.store_line(state)
+		save_game.close()
+		var dic : Dictionary = parse_json(state)
+		print(dic)
+#		for k in dic.keys():
+#			print(k)
+#			for v in dic.values():
+#				print(v)
 	pass
 
 "

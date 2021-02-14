@@ -11,12 +11,23 @@ pub fn make_world() -> World {
     world
 }
 
+pub fn make_resources() -> Resources {
+    Resources::default()
+}
+
 pub fn make_schedule() -> Schedule {
     Schedule::builder().build()
 }
 
-pub fn make_resources() -> Resources {
-    Resources::default()
+pub fn make_registry() -> Registry<String> {
+    let mut registry = Registry::<String>::default();
+
+    registry.register::<DistrictId>("district_id".to_string());
+    registry.register::<Player>("player".to_string());
+    registry.register::<Movable>("movable".to_string());
+    registry.register::<Static>("static".to_string());
+
+    registry
 }
 
 #[system(for_each)]

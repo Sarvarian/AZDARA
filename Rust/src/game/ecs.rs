@@ -8,6 +8,7 @@ pub struct ECSHandle {
     world: legion::World,
     resources: legion::Resources,
     schedule: legion::Schedule,
+    registry: legion::Registry<String>,
 }
 
 impl ECSHandle {
@@ -15,10 +16,12 @@ impl ECSHandle {
         let world = sys::make_world();
         let resources = sys::make_resources();
         let schedule = sys::make_schedule();
+        let registry = sys::make_registry();
         ECSHandle {
             world,
             resources,
             schedule,
+            registry,
         }
     }
 
@@ -46,7 +49,17 @@ impl ECSHandle {
         //             Variant::from_vector2(&Vector2D::new(pos.x as f32, pos.y as f32)),
         //         )
         //     }
-        Variant::from_dictionary(&Dictionary::new().into_shared())
+        // Variant::from_dictionary(&Dictionary::new().into_shared())
+
+        if let Ok(json) = serde_json::to_value(
+            &self
+                .world
+                .as_serializable(legion::component::<com::DistrictId>(), &self.registry),
+        ) {
+            Variant::from_str(json.to_string())
+        } else {
+            Variant::from_str("serde_jason Failed!".to_string())
+        }
     }
 
     pub fn update(&mut self, owner: &Node) {
