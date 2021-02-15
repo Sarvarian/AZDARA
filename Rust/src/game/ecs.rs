@@ -2,6 +2,7 @@ use euclid::*;
 use gdnative::prelude::*;
 
 mod com;
+mod res;
 mod sys;
 
 pub struct ECSHandle {
@@ -42,15 +43,6 @@ impl ECSHandle {
     }
 
     pub fn get_state(&self) -> Variant {
-        //     let dictionary = Dictionary::new();
-        //     for (_p, pos) in world.query::<(&com::Player, &com::Movable)>() {
-        //         dictionary.insert(
-        //             "Player",
-        //             Variant::from_vector2(&Vector2D::new(pos.x as f32, pos.y as f32)),
-        //         )
-        //     }
-        // Variant::from_dictionary(&Dictionary::new().into_shared())
-
         if let Ok(json) = serde_json::to_value(
             &self
                 .world
