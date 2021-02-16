@@ -1,0 +1,122 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://aban/lib/azdara.tres" type="GDNativeLibrary" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node
+
+
+func _process(_delta : float) -> void:
+	order_nav2d()
+	pass
+
+func _unhandled_key_input(event : InputEventKey) -> void:
+	if event.is_action_pressed(\"ui_accept\"):
+		order_nav2d()
+	pass
+
+
+func order_nav2d() -> void:
+	for c in $Navs.get_children():
+		$Navs.remove_child(c)
+		c.queue_free()
+	var sp : Vector2 = Vector2.ONE
+	var ep : Vector2 = Vector2(25, 25)
+	var obsticles : PoolVector2Array = [
+		Vector2(2,2),
+		Vector2(5,5),
+		Vector2(7,5),
+		Vector2(6,7),
+	]
+	var nav2d : Navigation2D
+#	nav2d = build_nav2d(sp, ep, obsticles)
+	nav2d = $Test.build_nav2d(sp, ep, obsticles)
+	$Navs.add_child(nav2d)
+	pass
+
+
+#func build_nav2d(
+#	start_point: Vector2,
+#	end_point: Vector2,
+#	obsticles : PoolVector2Array
+#	) -> Navigation2D:
+#
+#	var nav2d : Navigation2D = Navigation2D.new()
+#	var npi : NavigationPolygonInstance = NavigationPolygonInstance.new()
+#	var np : NavigationPolygon = NavigationPolygon.new()
+#
+#	var obcoords : Array = []
+#
+#	for o in obsticles:
+#		var coord : PoolVector2Array = [
+#			Vector2(o.x * 2, o.y * 2),
+#			Vector2((o.x * 2)+2, o.y * 2),
+#			Vector2((o.x * 2)+2, (o.y * 2)+2),
+#			Vector2(o.x * 2, (o.y * 2)+2),
+#		]
+#		obcoords.append(coord)
+#		pass
+#
+#	var obpacks : Array = []
+#
+#	for o in obcoords:
+#		for p in obpacks:
+#			for i in range(4):
+#				if p.has(i):
+#
+#					break
+#			pass
+#		pass
+#
+#	var outline : PoolVector2Array = []
+#	start_point *= 2
+#	end_point *= 2
+#	outline.append(start_point)
+#	outline.append(Vector2(end_point.x, start_point.y))
+#	outline.append(end_point)
+#	outline.append(Vector2(start_point.x, end_point.y))
+#	np.add_outline(outline)
+#
+#	for o in obcoords:
+#		outline.resize(0)
+#		for i in range(4):
+#			outline.append(o[i])
+#		np.add_outline(outline)
+#		pass
+#
+#
+#	np.make_polygons_from_outlines()
+#	npi.navpoly = np
+#	nav2d.add_child(npi)
+#	return nav2d
+#	pass
+"
+
+[sub_resource type="NativeScript" id=3]
+resource_name = "Test"
+class_name = "Test"
+library = ExtResource( 1 )
+
+[sub_resource type="NavigationPolygon" id=2]
+vertices = PoolVector2Array( 12, 12, 22, 14, 2, 14, 4, 12, 16, 10, 14, 10, 12, 10, 2, 2, 4, 8, 22, 2, 16, 8, 14, 8, 14, 6, 10, 6, 10, 4, 12, 6, 12, 8, 10, 10, 10, 8, 8, 6, 8, 4 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 1, 0, 5 ), PoolIntArray( 5, 0, 6 ), PoolIntArray( 3, 2, 7, 8 ), PoolIntArray( 9, 1, 4, 10 ), PoolIntArray( 10, 11, 12, 9 ), PoolIntArray( 13, 14, 15, 16 ), PoolIntArray( 16, 11, 5, 6 ), PoolIntArray( 16, 6, 17, 18 ), PoolIntArray( 13, 16, 18, 19 ), PoolIntArray( 19, 18, 8, 7 ), PoolIntArray( 20, 19, 7 ), PoolIntArray( 20, 7, 9, 14 ), PoolIntArray( 14, 9, 12, 15 ) ]
+outlines = [ PoolVector2Array( 2, 2, 22, 2, 22, 14, 2, 14 ), PoolVector2Array( 8, 4, 10, 4, 10, 6, 8, 6 ), PoolVector2Array( 12, 6, 14, 6, 14, 8, 16, 8, 16, 10, 14, 10, 14, 8, 12, 8 ), PoolVector2Array( 4, 8, 10, 8, 10, 10, 12, 10, 12, 12, 4, 12 ) ]
+
+[node name="Node" type="Node"]
+script = SubResource( 1 )
+
+[node name="Test" type="Node" parent="."]
+script = SubResource( 3 )
+
+[node name="Navs" type="Node" parent="."]
+
+[node name="Navigation2D" type="Navigation2D" parent="Navs"]
+
+[node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="Navs/Navigation2D"]
+navpoly = SubResource( 2 )
+
+[node name="Position2D" type="Position2D" parent="."]
+position = Vector2( 15, 9 )
+__meta__ = {
+"_gizmo_extents_": 1.0
+}
