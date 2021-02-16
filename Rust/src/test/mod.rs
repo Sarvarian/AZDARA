@@ -26,6 +26,7 @@ impl Test {
         end_point: Vector2,
         obsticles: Vector2Array,
     ) -> Variant {
+        // --- Casting --- \\
         let mut start_point = Vector2D::new(start_point.x as u8, start_point.y as u8);
         let mut end_point = Vector2D::new(end_point.x as u8, end_point.y as u8);
         let obsticles = {
@@ -36,10 +37,12 @@ impl Test {
             res
         };
 
+        // --- Starting --- \\
         let nav2d = gdnative::api::Navigation2D::new();
         let npi = gdnative::api::NavigationPolygonInstance::new();
         let np = gdnative::api::NavigationPolygon::new();
 
+        // --- Transforming --- \\
         let mut obcoords = Vec::<ObCoord>::with_capacity(obsticles.len() as usize);
 
         for o in obsticles.iter() {
@@ -52,6 +55,7 @@ impl Test {
             obcoords.push(obcoord);
         }
 
+        // --- Packing --- \\
         let mut obpacks = Vec::<Vec<ObCoord>>::with_capacity(obcoords.len());
 
         for o in obcoords.into_iter() {
@@ -60,6 +64,7 @@ impl Test {
             }
         }
 
+        // --- Outlining --- \\
         let mut outline = Vector2Array::new();
         start_point *= 2;
         end_point *= 2;
@@ -81,6 +86,7 @@ impl Test {
             });
         });
 
+        // --- Ending --- \\
         np.make_polygons_from_outlines();
         npi.set_navigation_polygon(np);
         nav2d.add_child(npi, false);
