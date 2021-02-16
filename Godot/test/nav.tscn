@@ -30,6 +30,11 @@ func order_nav2d() -> void:
 		Vector2(6,5),
 		Vector2(6,7),
 		Vector2(8,6),
+		Vector2(10,10),
+		Vector2(9,10),
+		Vector2(10,9),
+		Vector2(11,10),
+		Vector2(10,11),
 	]
 	var nav2d : Navigation2D
 #	nav2d = build_nav2d(sp, ep, obsticles)

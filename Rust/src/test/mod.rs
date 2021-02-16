@@ -1,11 +1,24 @@
+use bitflags;
 use gdnative::prelude::*;
 
 type Vector2D = euclid::Vector2D<u8, euclid::UnknownUnit>;
 type ObCoord = [Vector2D; 4];
 
+bitflags! {
+    struct Neighbors : u8 {
+        const NONE  = 0b00000000;
+        const UP    = 0b00000001;
+        const RIGHT = 0b00000010;
+        const DOWN  = 0b00000100;
+        const LEFT  = 0b00001000;
+        const FULL  = Self::UP.bits | Self::RIGHT.bits | Self::DOWN.bits | Self::LEFT.bits;
+    }
+}
+
 struct Obsticle {
     coords: ObCoord,
     pack: u8,
+    neighbors: Neighbors,
 }
 
 impl std::ops::Deref for Obsticle {
@@ -56,19 +69,36 @@ impl Test {
         let np = gdnative::api::NavigationPolygon::new();
 
         // --- Transforming --- \\
-        let mut obsticles = obsticles
-            .iter()
-            .enumerate()
-            .map(|(i, o)| {
+        let mut obsticles = (0..obsticles.len())
+            .map(|index| {
+                let o = obsticles[index];
                 let coords: ObCoord = [
                     Vector2D::new(o.x * 2, o.y * 2),
                     Vector2D::new((o.x * 2) + 2, o.y * 2),
                     Vector2D::new((o.x * 2) + 2, (o.y * 2) + 2),
                     Vector2D::new(o.x * 2, (o.y * 2) + 2),
                 ];
+                const X: Vector2D = Vector2D::new(1, 0);
+                const Y: Vector2D = Vector2D::new(0, 1);
+                let mut neighbors = Neighbors::NONE;
+                for o2 in 0..obsticles.len() {
+                    if obsticles[o2] == o + X {
+                        neighbors = neighbors | Neighbors::RIGHT
+                    } else if obsticles[o2] == o - X {
+                        neighbors = neighbors | Neighbors::LEFT
+                    } else if obsticles[o2] == o - Y {
+                        neighbors = neighbors | Neighbors::UP
+                    } else if obsticles[o2] == o + Y {
+                        neighbors = neighbors | Neighbors::DOWN
+                    }
+                    if neighbors == Neighbors::FULL {
+                        break;
+                    }
+                }
                 Obsticle {
                     coords,
-                    pack: i as u8,
+                    pack: index as u8,
+                    neighbors,
                 }
             })
             .collect::<Vec<Obsticle>>();
@@ -96,7 +126,7 @@ impl Test {
         // --- Massaging --- \\
         let mut msg = String::new();
         for (i, o) in obsticles.iter().enumerate() {
-            msg = format!("{}{}: {}\n", msg, i, o.pack);
+            msg = format!("{}{}: {} : {:?}\n", msg, i, o.pack, o.neighbors);
         }
         godot_print!("{}", msg);
 

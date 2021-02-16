@@ -1,4 +1,7 @@
+#[macro_use]
+extern crate bitflags;
 use gdnative::{godot_init, nativescript::InitHandle};
+
 mod game;
 mod test;
 
