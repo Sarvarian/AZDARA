@@ -71,13 +71,15 @@ impl Test {
         outline.push(Vector2::new(start_point.x, end_point.y));
         np.add_outline(outline);
 
-        // for o in obcoords.iter() {
-        //     let mut outline = Vector2Array::new();
-        //     for v in o.iter() {
-        //         outline.push(v.clone().cast::<f32>());
-        //     }
-        //     np.add_outline(outline);
-        // }
+        obpacks.iter().for_each(|p| {
+            p.iter().for_each(|o| {
+                let mut outline = Vector2Array::new();
+                for v in o.iter() {
+                    outline.push(v.clone().cast::<f32>());
+                }
+                np.add_outline(outline);
+            });
+        });
 
         np.make_polygons_from_outlines();
         npi.set_navigation_polygon(np);
