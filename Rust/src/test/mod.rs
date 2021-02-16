@@ -45,7 +45,7 @@ impl Test {
         // --- Transforming --- \\
         let mut obcoords = Vec::<ObCoord>::with_capacity(obsticles.len() as usize);
 
-        for o in obsticles.iter() {
+        obsticles.iter().for_each(|o| {
             let obcoord: ObCoord = [
                 Vector2D::new(o.x * 2, o.y * 2),
                 Vector2D::new((o.x * 2) + 2, o.y * 2),
@@ -53,16 +53,16 @@ impl Test {
                 Vector2D::new(o.x * 2, (o.y * 2) + 2),
             ];
             obcoords.push(obcoord);
-        }
+        });
 
         // --- Packing --- \\
         let mut obpacks = Vec::<Vec<ObCoord>>::with_capacity(obcoords.len());
 
-        for o in obcoords.into_iter() {
+        obcoords.into_iter().for_each(|o| {
             if let Some(o) = is_in_packs(&mut obpacks, o) {
                 obpacks.push(vec![o]);
             }
-        }
+        });
 
         // --- Outlining --- \\
         let mut outline = Vector2Array::new();
