@@ -26,7 +26,7 @@ impl Test {
         end_point: Vector2,
         obsticles: Vector2Array,
     ) -> Variant {
-        // --- Casting --- \\
+        // --- Converting --- \\
         let mut start_point = Vector2D::new(start_point.x as u8, start_point.y as u8);
         let mut end_point = Vector2D::new(end_point.x as u8, end_point.y as u8);
         let obsticles = {
