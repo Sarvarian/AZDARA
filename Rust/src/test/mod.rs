@@ -3,6 +3,19 @@ use gdnative::prelude::*;
 type Vector2D = euclid::Vector2D<u8, euclid::UnknownUnit>;
 type ObCoord = [Vector2D; 4];
 
+struct Obsticle {
+    coords: ObCoord,
+    pack: u8,
+}
+
+impl std::ops::Deref for Obsticle {
+    type Target = ObCoord;
+
+    fn deref(&self) -> &Self::Target {
+        &self.coords
+    }
+}
+
 #[derive(NativeClass)]
 #[inherit(Node)]
 pub struct Test;
@@ -43,26 +56,49 @@ impl Test {
         let np = gdnative::api::NavigationPolygon::new();
 
         // --- Transforming --- \\
-        let mut obcoords = Vec::<ObCoord>::with_capacity(obsticles.len() as usize);
-
-        obsticles.iter().for_each(|o| {
-            let obcoord: ObCoord = [
-                Vector2D::new(o.x * 2, o.y * 2),
-                Vector2D::new((o.x * 2) + 2, o.y * 2),
-                Vector2D::new((o.x * 2) + 2, (o.y * 2) + 2),
-                Vector2D::new(o.x * 2, (o.y * 2) + 2),
-            ];
-            obcoords.push(obcoord);
-        });
+        let mut obsticles = obsticles
+            .iter()
+            .enumerate()
+            .map(|(i, o)| {
+                let coords: ObCoord = [
+                    Vector2D::new(o.x * 2, o.y * 2),
+                    Vector2D::new((o.x * 2) + 2, o.y * 2),
+                    Vector2D::new((o.x * 2) + 2, (o.y * 2) + 2),
+                    Vector2D::new(o.x * 2, (o.y * 2) + 2),
+                ];
+                Obsticle {
+                    coords,
+                    pack: i as u8,
+                }
+            })
+            .collect::<Vec<Obsticle>>();
 
         // --- Packing --- \\
-        let mut obpacks = Vec::<Vec<ObCoord>>::with_capacity(obcoords.len());
+        let mut one_more_time = true;
+        while one_more_time {
+            one_more_time = false;
+            (0..obsticles.len()).for_each(|o1| {
+                (0..obsticles.len()).for_each(|o2| {
+                    (0..obsticles[o1].len()).for_each(|v1| {
+                        (0..obsticles[o1].len()).for_each(|v2| {
+                            if obsticles[o1].pack != obsticles[o2].pack {
+                                if obsticles[o1][v1] == obsticles[o2][v2] {
+                                    obsticles[o2].pack = obsticles[o1].pack;
+                                    one_more_time = true;
+                                }
+                            }
+                        });
+                    });
+                });
+            });
+        }
 
-        obcoords.into_iter().for_each(|o| {
-            if let Some(o) = is_in_packs(&mut obpacks, o) {
-                obpacks.push(vec![o]);
-            }
-        });
+        // --- Massaging --- \\
+        let mut msg = String::new();
+        for (i, o) in obsticles.iter().enumerate() {
+            msg = format!("{}{}: {}\n", msg, i, o.pack);
+        }
+        godot_print!("{}", msg);
 
         // --- Outlining --- \\
         let mut outline = Vector2Array::new();
@@ -76,14 +112,12 @@ impl Test {
         outline.push(Vector2::new(start_point.x, end_point.y));
         np.add_outline(outline);
 
-        obpacks.iter().for_each(|p| {
-            p.iter().for_each(|o| {
-                let mut outline = Vector2Array::new();
-                for v in o.iter() {
-                    outline.push(v.clone().cast::<f32>());
-                }
-                np.add_outline(outline);
-            });
+        obsticles.iter().for_each(|o| {
+            let mut outline = Vector2Array::new();
+            for v in o.iter() {
+                outline.push(v.clone().cast::<f32>());
+            }
+            np.add_outline(outline);
         });
 
         // --- Ending --- \\
@@ -92,27 +126,4 @@ impl Test {
         nav2d.add_child(npi, false);
         Variant::from_object(nav2d)
     }
-}
-
-fn is_in_packs(obpacks: &mut Vec<Vec<ObCoord>>, o: ObCoord) -> Option<ObCoord> {
-    for p in obpacks.iter_mut() {
-        if pack_check(p, &o) {
-            p.push(o);
-            return None;
-        }
-    }
-    Some(o)
-}
-
-fn pack_check(pack: &Vec<ObCoord>, io: &ObCoord) -> bool {
-    for iv in io.iter() {
-        for o in pack.iter() {
-            for v in o.iter() {
-                if iv == v {
-                    return true;
-                }
-            }
-        }
-    }
-    false
 }

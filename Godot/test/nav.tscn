@@ -7,7 +7,7 @@ script/source = "extends Node
 
 
 func _process(_delta : float) -> void:
-	order_nav2d()
+#	order_nav2d()
 	pass
 
 func _unhandled_key_input(event : InputEventKey) -> void:
@@ -23,10 +23,13 @@ func order_nav2d() -> void:
 	var sp : Vector2 = Vector2.ONE
 	var ep : Vector2 = Vector2(25, 25)
 	var obsticles : PoolVector2Array = [
+		Vector2(7,7),
 		Vector2(2,2),
 		Vector2(5,5),
 		Vector2(7,5),
+		Vector2(6,5),
 		Vector2(6,7),
+		Vector2(8,6),
 	]
 	var nav2d : Navigation2D
 #	nav2d = build_nav2d(sp, ep, obsticles)
