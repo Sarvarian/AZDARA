@@ -1,5 +1,6 @@
 use bitflags;
 use gdnative::prelude::*;
+use std::cmp::Ordering;
 
 type Vector2D = euclid::Vector2D<u8, euclid::UnknownUnit>;
 type ObCoord = [Vector2D; 4];
@@ -17,7 +18,7 @@ bitflags! {
 
 struct Obsticle {
     coords: ObCoord,
-    pack: u8,
+    pack: usize,
     neighbors: Neighbors,
 }
 
@@ -97,7 +98,7 @@ impl Test {
                 }
                 Obsticle {
                     coords,
-                    pack: index as u8,
+                    pack: index,
                     neighbors,
                 }
             })
@@ -150,6 +151,8 @@ impl Test {
             np.add_outline(outline);
         });
 
+        outline_renderer(&obsticles);
+
         // --- Ending --- \\
         np.make_polygons_from_outlines();
         npi.set_navigation_polygon(np);
@@ -163,8 +166,16 @@ struct Vertex {
     obsticle: usize,
 }
 
+impl std::ops::Deref for Vertex {
+    type Target = Vector2D;
+
+    fn deref(&self) -> &Self::Target {
+        &self.coord
+    }
+}
+
 fn outline_renderer(obsticles: &Vec<Obsticle>) {
-    let vertices = obsticles.iter().enumerate().fold(
+    let mut vertices = obsticles.iter().enumerate().fold(
         Vec::<Vertex>::with_capacity(obsticles.len() * 4),
         |vertices, (index, obsticle)| {
             obsticle.iter().fold(vertices, |mut vertices, vertex| {
@@ -176,4 +187,17 @@ fn outline_renderer(obsticles: &Vec<Obsticle>) {
             })
         },
     );
+
+    let most_top_left_vertex_index =
+        (0..vertices.len()).fold(0usize, |v1, v2| match vertices[v1].y.cmp(&vertices[v2].y) {
+            Ordering::Less => v1,
+            Ordering::Equal => match vertices[v1].x.cmp(&vertices[v2].x) {
+                Ordering::Greater => v2,
+                _ => v1,
+            },
+            Ordering::Greater => v2,
+        });
+
+    let mut vertex_outline = Vec::<Vertex>::new();
+    vertex_outline.push(vertices.remove(most_top_left_vertex_index));
 }
