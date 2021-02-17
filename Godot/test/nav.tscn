@@ -23,18 +23,18 @@ func order_nav2d() -> void:
 	var sp : Vector2 = Vector2.ONE
 	var ep : Vector2 = Vector2(25, 25)
 	var obsticles : PoolVector2Array = [
-		Vector2(7,7),
+#		Vector2(7,7),
 		Vector2(2,2),
 		Vector2(5,5),
 		Vector2(7,5),
-		Vector2(6,5),
+#		Vector2(6,5),
 		Vector2(6,7),
-		Vector2(8,6),
+#		Vector2(8,6),
 		Vector2(10,10),
-		Vector2(9,10),
-		Vector2(10,9),
-		Vector2(11,10),
-		Vector2(10,11),
+#		Vector2(9,10),
+#		Vector2(10,9),
+#		Vector2(11,10),
+#		Vector2(10,11),
 	]
 	var nav2d : Navigation2D
 #	nav2d = build_nav2d(sp, ep, obsticles)
@@ -100,31 +100,31 @@ func order_nav2d() -> void:
 #	pass
 "
 
-[sub_resource type="NativeScript" id=3]
+[sub_resource type="NativeScript" id=2]
 resource_name = "Test"
 class_name = "Test"
 library = ExtResource( 1 )
 
-[sub_resource type="NavigationPolygon" id=2]
-vertices = PoolVector2Array( 12, 12, 22, 14, 2, 14, 4, 12, 16, 10, 14, 10, 12, 10, 2, 2, 4, 8, 22, 2, 16, 8, 14, 8, 14, 6, 10, 6, 10, 4, 12, 6, 12, 8, 10, 10, 10, 8, 8, 6, 8, 4 )
-polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 1, 0, 5 ), PoolIntArray( 5, 0, 6 ), PoolIntArray( 3, 2, 7, 8 ), PoolIntArray( 9, 1, 4, 10 ), PoolIntArray( 10, 11, 12, 9 ), PoolIntArray( 13, 14, 15, 16 ), PoolIntArray( 16, 11, 5, 6 ), PoolIntArray( 16, 6, 17, 18 ), PoolIntArray( 13, 16, 18, 19 ), PoolIntArray( 19, 18, 8, 7 ), PoolIntArray( 20, 19, 7 ), PoolIntArray( 20, 7, 9, 14 ), PoolIntArray( 14, 9, 12, 15 ) ]
-outlines = [ PoolVector2Array( 2, 2, 22, 2, 22, 14, 2, 14 ), PoolVector2Array( 8, 4, 10, 4, 10, 6, 8, 6 ), PoolVector2Array( 12, 6, 14, 6, 14, 8, 16, 8, 16, 10, 14, 10, 14, 8, 12, 8 ), PoolVector2Array( 4, 8, 10, 8, 10, 10, 12, 10, 12, 12, 4, 12 ) ]
+[sub_resource type="NavigationPolygon" id=3]
+vertices = PoolVector2Array( 10, 6, 16, 6, 16, 12, 10, 12, 22, 16, 28, 18, 2, 18, 8, 16, 28, 2, 22, 4, 2, 2, 8, 4 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 5, 6, 7 ), PoolIntArray( 8, 5, 4, 9 ), PoolIntArray( 10, 8, 9, 11 ), PoolIntArray( 6, 10, 11, 7 ) ]
+outlines = [ PoolVector2Array( 2, 2, 28, 2, 28, 18, 2, 18 ), PoolVector2Array( 8, 4, 22, 4, 22, 16, 8, 16 ), PoolVector2Array( 10, 6, 16, 6, 16, 12, 10, 12 ) ]
 
 [node name="Node" type="Node"]
 script = SubResource( 1 )
 
 [node name="Test" type="Node" parent="."]
-script = SubResource( 3 )
+script = SubResource( 2 )
 
 [node name="Navs" type="Node" parent="."]
 
 [node name="Navigation2D" type="Navigation2D" parent="Navs"]
 
 [node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="Navs/Navigation2D"]
-navpoly = SubResource( 2 )
+navpoly = SubResource( 3 )
 
 [node name="Position2D" type="Position2D" parent="."]
-position = Vector2( 15, 9 )
+position = Vector2( 5, 9 )
 __meta__ = {
-"_gizmo_extents_": 1.0
+"_gizmo_extents_": 0.7
 }

@@ -157,3 +157,23 @@ impl Test {
         Variant::from_object(nav2d)
     }
 }
+
+struct Vertex {
+    coord: Vector2D,
+    obsticle: usize,
+}
+
+fn outline_renderer(obsticles: &Vec<Obsticle>) {
+    let vertices = obsticles.iter().enumerate().fold(
+        Vec::<Vertex>::with_capacity(obsticles.len() * 4),
+        |vertices, (index, obsticle)| {
+            obsticle.iter().fold(vertices, |mut vertices, vertex| {
+                vertices.push(Vertex {
+                    coord: vertex.clone(),
+                    obsticle: index,
+                });
+                vertices
+            })
+        },
+    );
+}
