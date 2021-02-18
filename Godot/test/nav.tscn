@@ -31,7 +31,7 @@ func order_nav2d() -> void:
 	var obsticles : PoolVector2Array = []
 	for c in $Obsticles.get_children():
 		obsticles.append((c as Position2D).global_position)
-	$Test.set_obsticles(sp, ep, obsticles, 10)
+	$Test.set_obsticles(sp, ep, obsticles, 8)
 	
 	var navpoly : NavigationPolygon = $Test.build_navpoly()
 	
