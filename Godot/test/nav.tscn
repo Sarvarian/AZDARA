@@ -6,8 +6,13 @@
 script/source = "extends Node
 
 
+func _ready() -> void:
+	order_nav2d()
+	pass
+
+
 func _process(_delta : float) -> void:
-#	order_nav2d()
+	order_nav2d()
 	pass
 
 func _unhandled_key_input(event : InputEventKey) -> void:
@@ -20,84 +25,41 @@ func order_nav2d() -> void:
 	for c in $Navs.get_children():
 		$Navs.remove_child(c)
 		c.queue_free()
+	
 	var sp : Vector2 = Vector2.ONE
 	var ep : Vector2 = Vector2(25, 25)
-	var obsticles : PoolVector2Array = [
-#		Vector2(7,7),
-		Vector2(2,2),
-		Vector2(5,5),
-		Vector2(7,5),
-#		Vector2(6,5),
-		Vector2(6,7),
-#		Vector2(8,6),
-		Vector2(10,10),
-#		Vector2(9,10),
-#		Vector2(10,9),
-#		Vector2(11,10),
-#		Vector2(10,11),
-	]
-	var nav2d : Navigation2D
-#	nav2d = build_nav2d(sp, ep, obsticles)
-	nav2d = $Test.build_nav2d(sp, ep, obsticles)
+	var obsticles : PoolVector2Array = []
+	for c in $Obsticles.get_children():
+		obsticles.append((c as Position2D).position)
+	var navpoly : NavigationPolygon = $Test.build_navpoly(sp, ep, obsticles)
+	
+#	for o in navpoly.get_outline_count():
+#		print(navpoly.get_outline(o))
+	
+	var npi : NavigationPolygonInstance = NavigationPolygonInstance.new()
+	npi.navpoly = navpoly
+	var nav2d : Navigation2D = Navigation2D.new()
+	nav2d.add_child(npi)
+	
 	$Navs.add_child(nav2d)
+	
 	pass
 
 
-#func build_nav2d(
-#	start_point: Vector2,
-#	end_point: Vector2,
-#	obsticles : PoolVector2Array
-#	) -> Navigation2D:
-#
-#	var nav2d : Navigation2D = Navigation2D.new()
-#	var npi : NavigationPolygonInstance = NavigationPolygonInstance.new()
-#	var np : NavigationPolygon = NavigationPolygon.new()
-#
-#	var obcoords : Array = []
-#
-#	for o in obsticles:
-#		var coord : PoolVector2Array = [
-#			Vector2(o.x * 2, o.y * 2),
-#			Vector2((o.x * 2)+2, o.y * 2),
-#			Vector2((o.x * 2)+2, (o.y * 2)+2),
-#			Vector2(o.x * 2, (o.y * 2)+2),
-#		]
-#		obcoords.append(coord)
-#		pass
-#
-#	var obpacks : Array = []
-#
-#	for o in obcoords:
-#		for p in obpacks:
-#			for i in range(4):
-#				if p.has(i):
-#
-#					break
-#			pass
-#		pass
-#
-#	var outline : PoolVector2Array = []
-#	start_point *= 2
-#	end_point *= 2
-#	outline.append(start_point)
-#	outline.append(Vector2(end_point.x, start_point.y))
-#	outline.append(end_point)
-#	outline.append(Vector2(start_point.x, end_point.y))
-#	np.add_outline(outline)
-#
-#	for o in obcoords:
-#		outline.resize(0)
-#		for i in range(4):
-#			outline.append(o[i])
-#		np.add_outline(outline)
-#		pass
-#
-#
-#	np.make_polygons_from_outlines()
-#	npi.navpoly = np
-#	nav2d.add_child(npi)
-#	return nav2d
-#	pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "
 
 [sub_resource type="NativeScript" id=2]
@@ -106,9 +68,9 @@ class_name = "Test"
 library = ExtResource( 1 )
 
 [sub_resource type="NavigationPolygon" id=3]
-vertices = PoolVector2Array( 10, 6, 16, 6, 16, 12, 10, 12, 22, 16, 28, 18, 2, 18, 8, 16, 28, 2, 22, 4, 2, 2, 8, 4 )
-polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 5, 6, 7 ), PoolIntArray( 8, 5, 4, 9 ), PoolIntArray( 10, 8, 9, 11 ), PoolIntArray( 6, 10, 11, 7 ) ]
-outlines = [ PoolVector2Array( 2, 2, 28, 2, 28, 18, 2, 18 ), PoolVector2Array( 8, 4, 22, 4, 22, 16, 8, 16 ), PoolVector2Array( 10, 6, 16, 6, 16, 12, 10, 12 ) ]
+vertices = PoolVector2Array( 3, 3, 25, 3, 25, 25, 3, 25 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( 3, 3, 25, 3, 25, 25, 3, 25 ) ]
 
 [node name="Node" type="Node"]
 script = SubResource( 1 )
@@ -119,12 +81,355 @@ script = SubResource( 2 )
 [node name="Navs" type="Node" parent="."]
 
 [node name="Navigation2D" type="Navigation2D" parent="Navs"]
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="Navs/Navigation2D"]
 navpoly = SubResource( 3 )
 
-[node name="Position2D" type="Position2D" parent="."]
-position = Vector2( 5, 9 )
+[node name="Obsticles" type="Node" parent="."]
+
+[node name="Position2D" type="Position2D" parent="Obsticles"]
+position = Vector2( 11, 7 )
+rotation = 0.785398
 __meta__ = {
-"_gizmo_extents_": 0.7
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D2" type="Position2D" parent="Obsticles"]
+position = Vector2( 12, 6 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D3" type="Position2D" parent="Obsticles"]
+position = Vector2( 13, 7 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D4" type="Position2D" parent="Obsticles"]
+position = Vector2( 12, 8 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D5" type="Position2D" parent="Obsticles"]
+position = Vector2( 11, 8 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D6" type="Position2D" parent="Obsticles"]
+position = Vector2( 10, 6 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D7" type="Position2D" parent="Obsticles"]
+position = Vector2( 9, 7 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D8" type="Position2D" parent="Obsticles"]
+position = Vector2( 9, 8 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D9" type="Position2D" parent="Obsticles"]
+position = Vector2( 9, 9 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D10" type="Position2D" parent="Obsticles"]
+position = Vector2( 9, 9 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D11" type="Position2D" parent="Obsticles"]
+position = Vector2( 11, 9 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D12" type="Position2D" parent="Obsticles"]
+position = Vector2( 10, 9 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D13" type="Position2D" parent="Obsticles"]
+position = Vector2( 9, 10 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D14" type="Position2D" parent="Obsticles"]
+position = Vector2( 10, 10 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D15" type="Position2D" parent="Obsticles"]
+position = Vector2( 11, 10 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D16" type="Position2D" parent="Obsticles"]
+position = Vector2( 13, 9 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D17" type="Position2D" parent="Obsticles"]
+position = Vector2( 13, 8 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D18" type="Position2D" parent="Obsticles"]
+position = Vector2( 14, 8 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D19" type="Position2D" parent="Obsticles"]
+position = Vector2( 14, 9 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D20" type="Position2D" parent="Obsticles"]
+position = Vector2( 14, 10 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D21" type="Position2D" parent="Obsticles"]
+position = Vector2( 14, 11 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D22" type="Position2D" parent="Obsticles"]
+position = Vector2( 14, 13 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D28" type="Position2D" parent="Obsticles"]
+position = Vector2( 19, 15 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D29" type="Position2D" parent="Obsticles"]
+position = Vector2( 15, 17 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D30" type="Position2D" parent="Obsticles"]
+position = Vector2( 16, 17 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D31" type="Position2D" parent="Obsticles"]
+position = Vector2( 17, 17 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D32" type="Position2D" parent="Obsticles"]
+position = Vector2( 17, 18 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D33" type="Position2D" parent="Obsticles"]
+position = Vector2( 16, 19 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D34" type="Position2D" parent="Obsticles"]
+position = Vector2( 14, 18 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D35" type="Position2D" parent="Obsticles"]
+position = Vector2( 20, 15 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D36" type="Position2D" parent="Obsticles"]
+position = Vector2( 20, 14 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D37" type="Position2D" parent="Obsticles"]
+position = Vector2( 20, 13 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D38" type="Position2D" parent="Obsticles"]
+position = Vector2( 9, 15 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D39" type="Position2D" parent="Obsticles"]
+position = Vector2( 9, 17 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D40" type="Position2D" parent="Obsticles"]
+position = Vector2( 9, 16 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D41" type="Position2D" parent="Obsticles"]
+position = Vector2( 8, 16 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D42" type="Position2D" parent="Obsticles"]
+position = Vector2( 8, 15 )
+rotation = 3.49755
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D43" type="Position2D" parent="Obsticles"]
+position = Vector2( 7, 15 )
+rotation = 3.49755
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D44" type="Position2D" parent="Obsticles"]
+position = Vector2( 7, 17 )
+rotation = 3.49755
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D45" type="Position2D" parent="Obsticles"]
+position = Vector2( 8, 18 )
+rotation = 3.49755
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D46" type="Position2D" parent="Obsticles"]
+position = Vector2( 8, 24 )
+rotation = 3.49755
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D47" type="Position2D" parent="Obsticles"]
+position = Vector2( 6, 23 )
+rotation = 3.49755
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D48" type="Position2D" parent="Obsticles"]
+position = Vector2( 5, 23 )
+rotation = 3.49755
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D49" type="Position2D" parent="Obsticles"]
+position = Vector2( 7, 23 )
+rotation = 3.68052
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D23" type="Position2D" parent="Obsticles"]
+position = Vector2( 14, 12 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D24" type="Position2D" parent="Obsticles"]
+position = Vector2( 13, 12 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D25" type="Position2D" parent="Obsticles"]
+position = Vector2( 12, 12 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D26" type="Position2D" parent="Obsticles"]
+position = Vector2( 11, 12 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D27" type="Position2D" parent="Obsticles"]
+position = Vector2( 11, 11 )
+rotation = 0.785398
+__meta__ = {
+"_gizmo_extents_": 0.6
 }
