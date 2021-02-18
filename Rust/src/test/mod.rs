@@ -1,15 +1,25 @@
 use gdnative::prelude::*;
 
-type Vector2D = euclid::Vector2D<u8, euclid::UnknownUnit>;
+use crate::helpers::navpoly_builder::{build, CoordinatePrecision, OffsetPrecision, Vector2D};
 
 #[derive(NativeClass)]
 #[inherit(Node)]
-pub struct Test;
+pub struct Test {
+    start_point: Vector2D,
+    end_point: Vector2D,
+    obsticles: Vec<Vector2D>,
+    offset: OffsetPrecision,
+}
 
 #[methods]
 impl Test {
     fn new(_owner: &Node) -> Self {
-        Test {}
+        Test {
+            start_point: Vector2D::new(0 as CoordinatePrecision, 0 as CoordinatePrecision),
+            end_point: Vector2D::new(0 as CoordinatePrecision, 0 as CoordinatePrecision),
+            obsticles: vec![],
+            offset: 2 as OffsetPrecision,
+        }
     }
 
     #[export]
@@ -18,56 +28,64 @@ impl Test {
     }
 
     #[export]
-    fn build_navpoly(
-        &self,
+    fn set_obsticles(
+        &mut self,
         _owner: &Node,
         start_point: Vector2,
         end_point: Vector2,
         obsticles: Vector2Array,
-    ) -> Variant {
+        offset: OffsetPrecision,
+    ) {
         // --- Converting --- \\
-        let start_point = Vector2D::new(start_point.x as u8, start_point.y as u8);
-        let end_point = Vector2D::new(end_point.x as u8, end_point.y as u8);
-        let obsticles = {
-            let mut res = Vec::<_>::with_capacity(obsticles.len() as usize);
+        self.start_point = Vector2D::new(
+            start_point.x.clamp(
+                CoordinatePrecision::MIN as f32,
+                CoordinatePrecision::MAX as f32,
+            ) as CoordinatePrecision,
+            start_point.y.clamp(
+                CoordinatePrecision::MIN as f32,
+                CoordinatePrecision::MAX as f32,
+            ) as CoordinatePrecision,
+        );
+        self.end_point = Vector2D::new(
+            end_point.x.clamp(
+                CoordinatePrecision::MIN as f32,
+                CoordinatePrecision::MAX as f32,
+            ) as CoordinatePrecision,
+            end_point.y.clamp(
+                CoordinatePrecision::MIN as f32,
+                CoordinatePrecision::MAX as f32,
+            ) as CoordinatePrecision,
+        );
+        self.obsticles = {
+            let mut res = Vec::<Vector2D>::with_capacity(obsticles.len() as usize);
             for i in 0..obsticles.len() {
-                res.push(obsticles.get(i).cast::<u8>());
+                res.push(
+                    obsticles
+                        .get(i)
+                        .clamp(
+                            Vector2D::new(CoordinatePrecision::MIN, CoordinatePrecision::MIN)
+                                .cast(),
+                            Vector2D::new(CoordinatePrecision::MAX, CoordinatePrecision::MAX)
+                                .cast(),
+                        )
+                        .cast(),
+                );
             }
             res
         };
-
-        let np = crate::helpers::navpoly_builder::build(start_point, end_point, obsticles, 2);
-
-        Variant::from_object(np)
+        self.offset = offset.clamp(OffsetPrecision::MIN, OffsetPrecision::MAX);
     }
 
     #[export]
-    fn build_nav2d(
-        &self,
-        _owner: &Node,
-        start_point: Vector2,
-        end_point: Vector2,
-        obsticles: Vector2Array,
-    ) -> Variant {
-        // --- Converting --- \\
-        let start_point = Vector2D::new(start_point.x as u8, start_point.y as u8);
-        let end_point = Vector2D::new(end_point.x as u8, end_point.y as u8);
-        let obsticles = {
-            let mut res = Vec::<_>::with_capacity(obsticles.len() as usize);
-            for i in 0..obsticles.len() {
-                res.push(obsticles.get(i).cast::<u8>());
-            }
-            res
-        };
+    fn build_navpoly(&self, _owner: &Node) -> Variant {
+        let np = build(
+            self.start_point,
+            self.end_point,
+            self.obsticles.clone(),
+            self.offset,
+        );
 
-        // --- Starting --- \\
-        let nav2d = gdnative::api::Navigation2D::new();
-        let npi = gdnative::api::NavigationPolygonInstance::new();
-        let np = crate::helpers::navpoly_builder::build(start_point, end_point, obsticles, 2);
-
-        // --- Ending --- \\
-        npi.set_navigation_polygon(np);
-        nav2d.add_child(npi, false);
-        Variant::from_object(nav2d)
+        Variant::from_object(np)
     }
 }

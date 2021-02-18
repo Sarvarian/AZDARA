@@ -2,14 +2,14 @@ use gdnative::core_types::{Vector2, Vector2Array};
 use outline_rendering::outline_renderer;
 use std::collections::HashMap;
 
-type CoordinatePrecision = u8;
-type VertexCoordinatePrecision = f32;
-type OffsetPrecision = u8;
-type Vector2D = euclid::Vector2D<CoordinatePrecision, euclid::UnknownUnit>;
-type Outline = gdnative::core_types::TypedArray<euclid::Vector2D<f32, euclid::UnknownUnit>>;
+pub type CoordinatePrecision = u8;
+pub type VertexCoordinatePrecision = f32;
+pub type OffsetPrecision = u8;
+pub type Vector2D = euclid::Vector2D<CoordinatePrecision, euclid::UnknownUnit>;
+pub type Outline = gdnative::core_types::TypedArray<euclid::Vector2D<f32, euclid::UnknownUnit>>;
 
 pub fn build(
-    mut start_point: Vector2D,
+    start_point: Vector2D,
     mut end_point: Vector2D,
     obsticles: Vec<Vector2D>,
     offset: OffsetPrecision,
@@ -24,16 +24,15 @@ pub fn build(
         offset
     };
 
-    // --- Sorting --- \\
-    // obsticles.sort_by(|a, b| a.y.partial_cmp(&b.y).unwrap());
-    // obsticles.sort_by(|a, b| a.x.partial_cmp(&b.x).unwrap());
-
     // --- Hashing --- \\
     let map_cap = obsticles.len();
     let mut obsticles =
         obsticles
             .into_iter()
-            .fold(HashMap::with_capacity(map_cap), |mut map, o| {
+            .fold(HashMap::with_capacity(map_cap), |mut map, mut o| {
+                o += Vector2D::new(1 as CoordinatePrecision, 1 as CoordinatePrecision);
+                end_point.x = end_point.x.max(o.x);
+                end_point.y = end_point.y.max(o.y);
                 map.insert(
                     o,
                     vec![
@@ -46,15 +45,61 @@ pub fn build(
                 map
             });
 
+    // --- Building Borders --- \\
+    for i in start_point.x..=end_point.x {
+        let o = Vector2D::new(i, start_point.y);
+        obsticles.insert(
+            o,
+            vec![
+                vertex0(&o, offset),
+                vertex1(&o, offset),
+                vertex2(&o, offset),
+                vertex3(&o, offset),
+            ],
+        );
+        let o = Vector2D::new(i, end_point.y);
+        obsticles.insert(
+            o,
+            vec![
+                vertex0(&o, offset),
+                vertex1(&o, offset),
+                vertex2(&o, offset),
+                vertex3(&o, offset),
+            ],
+        );
+    }
+    for i in start_point.y..=end_point.y {
+        let o = Vector2D::new(start_point.x, i);
+        obsticles.insert(
+            o,
+            vec![
+                vertex0(&o, offset),
+                vertex1(&o, offset),
+                vertex2(&o, offset),
+                vertex3(&o, offset),
+            ],
+        );
+        let o = Vector2D::new(end_point.x, i);
+        obsticles.insert(
+            o,
+            vec![
+                vertex0(&o, offset),
+                vertex1(&o, offset),
+                vertex2(&o, offset),
+                vertex3(&o, offset),
+            ],
+        );
+    }
+
+    // --- Rendering Outlines --- \\
     while let Ok(outline) = outline_renderer(&mut obsticles, offset) {
         navpoly.add_outline(outline);
     }
 
+    let offset2d: Vector2 = Vector2::new(offset as f32, offset as f32);
+    let start_point: Vector2 = start_point.cast() - offset2d;
+    let end_point: Vector2 = (end_point.cast() * offset as f32) + (offset2d * 2f32);
     let mut outline = Vector2Array::new();
-    start_point *= offset;
-    end_point *= offset;
-    let start_point = start_point.cast::<f32>();
-    let end_point = end_point.cast::<f32>();
     outline.push(start_point);
     outline.push(Vector2::new(end_point.x, start_point.y));
     outline.push(end_point);
@@ -67,21 +112,30 @@ pub fn build(
 }
 
 fn vertex0(obsticle: &Vector2D, offset: OffsetPrecision) -> Vector2D {
-    Vector2D::new(obsticle.x * offset, (obsticle.y * offset) + offset)
+    Vector2D::new(
+        obsticle.x * offset as CoordinatePrecision,
+        (obsticle.y * offset as CoordinatePrecision) + offset as CoordinatePrecision,
+    )
 }
 
 fn vertex1(obsticle: &Vector2D, offset: OffsetPrecision) -> Vector2D {
-    Vector2D::new(obsticle.x * offset, obsticle.y * offset)
+    Vector2D::new(
+        obsticle.x * offset as CoordinatePrecision,
+        obsticle.y * offset as CoordinatePrecision,
+    )
 }
 
 fn vertex2(obsticle: &Vector2D, offset: OffsetPrecision) -> Vector2D {
-    Vector2D::new((obsticle.x * offset) + offset, obsticle.y * offset)
+    Vector2D::new(
+        (obsticle.x * offset as CoordinatePrecision) + offset as CoordinatePrecision,
+        obsticle.y * offset as CoordinatePrecision,
+    )
 }
 
 fn vertex3(obsticle: &Vector2D, offset: OffsetPrecision) -> Vector2D {
     Vector2D::new(
-        (obsticle.x * offset) + offset,
-        (obsticle.y * offset) + offset,
+        (obsticle.x * offset as CoordinatePrecision) + offset as CoordinatePrecision,
+        (obsticle.y * offset as CoordinatePrecision) + offset as CoordinatePrecision,
     )
 }
 

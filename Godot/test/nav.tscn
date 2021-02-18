@@ -30,8 +30,10 @@ func order_nav2d() -> void:
 	var ep : Vector2 = Vector2(25, 25)
 	var obsticles : PoolVector2Array = []
 	for c in $Obsticles.get_children():
-		obsticles.append((c as Position2D).position)
-	var navpoly : NavigationPolygon = $Test.build_navpoly(sp, ep, obsticles)
+		obsticles.append((c as Position2D).global_position)
+	$Test.set_obsticles(sp, ep, obsticles, 10)
+	
+	var navpoly : NavigationPolygon = $Test.build_navpoly()
 	
 #	for o in navpoly.get_outline_count():
 #		print(navpoly.get_outline(o))
@@ -68,12 +70,15 @@ class_name = "Test"
 library = ExtResource( 1 )
 
 [sub_resource type="NavigationPolygon" id=3]
-vertices = PoolVector2Array( 3, 3, 25, 3, 25, 25, 3, 25 )
+vertices = PoolVector2Array( 0, 0, 25, 0, 25, 25, 0, 25 )
 polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
-outlines = [ PoolVector2Array( 3, 3, 25, 3, 25, 25, 3, 25 ) ]
+outlines = [ PoolVector2Array( 0, 0, 25, 0, 25, 25, 0, 25 ) ]
 
 [node name="Node" type="Node"]
 script = SubResource( 1 )
+__meta__ = {
+"_edit_horizontal_guides_": [ -1.0 ]
+}
 
 [node name="Test" type="Node" parent="."]
 script = SubResource( 2 )
@@ -89,347 +94,29 @@ __meta__ = {
 [node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="Navs/Navigation2D"]
 navpoly = SubResource( 3 )
 
-[node name="Obsticles" type="Node" parent="."]
+[node name="Obsticles" type="Node2D" parent="."]
+visible = false
 
 [node name="Position2D" type="Position2D" parent="Obsticles"]
-position = Vector2( 11, 7 )
-rotation = 0.785398
+position = Vector2( 9, 10 )
 __meta__ = {
 "_gizmo_extents_": 0.6
 }
 
 [node name="Position2D2" type="Position2D" parent="Obsticles"]
-position = Vector2( 12, 6 )
-rotation = 0.785398
+position = Vector2( 12, 8 )
 __meta__ = {
 "_gizmo_extents_": 0.6
 }
 
 [node name="Position2D3" type="Position2D" parent="Obsticles"]
-position = Vector2( 13, 7 )
-rotation = 0.785398
+position = Vector2( 10, 9 )
 __meta__ = {
 "_gizmo_extents_": 0.6
 }
 
 [node name="Position2D4" type="Position2D" parent="Obsticles"]
-position = Vector2( 12, 8 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D5" type="Position2D" parent="Obsticles"]
-position = Vector2( 11, 8 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D6" type="Position2D" parent="Obsticles"]
-position = Vector2( 10, 6 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D7" type="Position2D" parent="Obsticles"]
-position = Vector2( 9, 7 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D8" type="Position2D" parent="Obsticles"]
-position = Vector2( 9, 8 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D9" type="Position2D" parent="Obsticles"]
-position = Vector2( 9, 9 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D10" type="Position2D" parent="Obsticles"]
-position = Vector2( 9, 9 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D11" type="Position2D" parent="Obsticles"]
 position = Vector2( 11, 9 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D12" type="Position2D" parent="Obsticles"]
-position = Vector2( 10, 9 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D13" type="Position2D" parent="Obsticles"]
-position = Vector2( 9, 10 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D14" type="Position2D" parent="Obsticles"]
-position = Vector2( 10, 10 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D15" type="Position2D" parent="Obsticles"]
-position = Vector2( 11, 10 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D16" type="Position2D" parent="Obsticles"]
-position = Vector2( 13, 9 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D17" type="Position2D" parent="Obsticles"]
-position = Vector2( 13, 8 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D18" type="Position2D" parent="Obsticles"]
-position = Vector2( 14, 8 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D19" type="Position2D" parent="Obsticles"]
-position = Vector2( 14, 9 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D20" type="Position2D" parent="Obsticles"]
-position = Vector2( 14, 10 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D21" type="Position2D" parent="Obsticles"]
-position = Vector2( 14, 11 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D22" type="Position2D" parent="Obsticles"]
-position = Vector2( 14, 13 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D28" type="Position2D" parent="Obsticles"]
-position = Vector2( 19, 15 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D29" type="Position2D" parent="Obsticles"]
-position = Vector2( 15, 17 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D30" type="Position2D" parent="Obsticles"]
-position = Vector2( 16, 17 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D31" type="Position2D" parent="Obsticles"]
-position = Vector2( 17, 17 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D32" type="Position2D" parent="Obsticles"]
-position = Vector2( 17, 18 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D33" type="Position2D" parent="Obsticles"]
-position = Vector2( 16, 19 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D34" type="Position2D" parent="Obsticles"]
-position = Vector2( 14, 18 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D35" type="Position2D" parent="Obsticles"]
-position = Vector2( 20, 15 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D36" type="Position2D" parent="Obsticles"]
-position = Vector2( 20, 14 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D37" type="Position2D" parent="Obsticles"]
-position = Vector2( 20, 13 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D38" type="Position2D" parent="Obsticles"]
-position = Vector2( 9, 15 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D39" type="Position2D" parent="Obsticles"]
-position = Vector2( 9, 17 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D40" type="Position2D" parent="Obsticles"]
-position = Vector2( 9, 16 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D41" type="Position2D" parent="Obsticles"]
-position = Vector2( 8, 16 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D42" type="Position2D" parent="Obsticles"]
-position = Vector2( 8, 15 )
-rotation = 3.49755
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D43" type="Position2D" parent="Obsticles"]
-position = Vector2( 7, 15 )
-rotation = 3.49755
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D44" type="Position2D" parent="Obsticles"]
-position = Vector2( 7, 17 )
-rotation = 3.49755
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D45" type="Position2D" parent="Obsticles"]
-position = Vector2( 8, 18 )
-rotation = 3.49755
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D46" type="Position2D" parent="Obsticles"]
-position = Vector2( 8, 24 )
-rotation = 3.49755
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D47" type="Position2D" parent="Obsticles"]
-position = Vector2( 6, 23 )
-rotation = 3.49755
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D48" type="Position2D" parent="Obsticles"]
-position = Vector2( 5, 23 )
-rotation = 3.49755
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D49" type="Position2D" parent="Obsticles"]
-position = Vector2( 7, 23 )
-rotation = 3.68052
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D23" type="Position2D" parent="Obsticles"]
-position = Vector2( 14, 12 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D24" type="Position2D" parent="Obsticles"]
-position = Vector2( 13, 12 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D25" type="Position2D" parent="Obsticles"]
-position = Vector2( 12, 12 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D26" type="Position2D" parent="Obsticles"]
-position = Vector2( 11, 12 )
-rotation = 0.785398
-__meta__ = {
-"_gizmo_extents_": 0.6
-}
-
-[node name="Position2D27" type="Position2D" parent="Obsticles"]
-position = Vector2( 11, 11 )
-rotation = 0.785398
 __meta__ = {
 "_gizmo_extents_": 0.6
 }
