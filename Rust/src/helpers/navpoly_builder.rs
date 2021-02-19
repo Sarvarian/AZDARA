@@ -2,16 +2,17 @@ use gdnative::core_types::{Vector2, Vector2Array};
 use outline_rendering::outline_renderer;
 use std::collections::HashMap;
 
-pub type CoordinatePrecision = u8;
-pub type VertexCoordinatePrecision = f32;
+pub type InputCoordinatePrecision = u16;
+pub type CoordinatePrecision = u32;
 pub type OffsetPrecision = u8;
+pub type InputVector2D = euclid::Vector2D<InputCoordinatePrecision, euclid::UnknownUnit>;
 pub type Vector2D = euclid::Vector2D<CoordinatePrecision, euclid::UnknownUnit>;
 pub type Outline = gdnative::core_types::TypedArray<euclid::Vector2D<f32, euclid::UnknownUnit>>;
 
 pub fn build(
-    start_point: Vector2D,
-    mut end_point: Vector2D,
-    obsticles: Vec<Vector2D>,
+    start_point: InputVector2D,
+    end_point: InputVector2D,
+    obsticles: Vec<InputVector2D>,
     offset: OffsetPrecision,
 ) -> gdnative::Ref<gdnative::api::NavigationPolygon, gdnative::prelude::Unique> {
     // --- Starting --- \\
@@ -23,14 +24,17 @@ pub fn build(
     } else {
         offset
     };
+    let start_point: Vector2D = start_point.cast();
+    let mut end_point: Vector2D = end_point.cast();
 
     // --- Hashing --- \\
     let map_cap = obsticles.len();
     let mut obsticles =
         obsticles
             .into_iter()
-            .fold(HashMap::with_capacity(map_cap), |mut map, mut o| {
-                o += Vector2D::new(1 as CoordinatePrecision, 1 as CoordinatePrecision);
+            .fold(HashMap::with_capacity(map_cap), |mut map, o| {
+                let o: Vector2D =
+                    Vector2D::new(1 as CoordinatePrecision, 1 as CoordinatePrecision) + o.cast();
                 end_point.x = end_point.x.max(o.x);
                 end_point.y = end_point.y.max(o.y);
                 map.insert(
@@ -140,10 +144,7 @@ fn vertex3(obsticle: &Vector2D, offset: OffsetPrecision) -> Vector2D {
 }
 
 mod outline_rendering {
-    use super::{
-        vertex0, vertex1, vertex2, vertex3, HashMap, OffsetPrecision, Outline, Vector2D,
-        VertexCoordinatePrecision,
-    };
+    use super::{vertex0, vertex1, vertex2, vertex3, HashMap, OffsetPrecision, Outline, Vector2D};
 
     /// pub const LEFT: u8 = 0u8;
     /// pub const LETF_UP: u8 = 1u8;
@@ -162,8 +163,8 @@ mod outline_rendering {
         let mut o = desirable_obsticle.clone();
         let mut outline = Outline::new();
         while let Ok(v_index) = direction_vertex_index(&obsticles, &o, direction, offset) {
-            let mut margin_x = 0.1 as VertexCoordinatePrecision;
-            let mut margin_y = 0.1 as VertexCoordinatePrecision;
+            let mut margin_x = 0.1f32;
+            let mut margin_y = 0.1f32;
             {
                 if direction == 0 {
                     margin_x *= -1.;
@@ -176,9 +177,7 @@ mod outline_rendering {
             }
             outline.push(
                 (obsticles.get_mut(&o).ok_or(())?.remove(v_index).cast())
-                    + euclid::Vector2D::<VertexCoordinatePrecision, euclid::UnknownUnit>::new(
-                        margin_x, margin_y,
-                    ),
+                    + euclid::Vector2D::<f32, euclid::UnknownUnit>::new(margin_x, margin_y),
             );
 
             // (o, direction) = next_obsticle_and_direction(obsticles, o, direction);

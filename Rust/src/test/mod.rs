@@ -1,13 +1,15 @@
 use gdnative::prelude::*;
 
-use crate::helpers::navpoly_builder::{build, CoordinatePrecision, OffsetPrecision, Vector2D};
+use crate::helpers::navpoly_builder::{
+    build, InputCoordinatePrecision, InputVector2D, OffsetPrecision,
+};
 
 #[derive(NativeClass)]
 #[inherit(Node)]
 pub struct Test {
-    start_point: Vector2D,
-    end_point: Vector2D,
-    obsticles: Vec<Vector2D>,
+    start_point: InputVector2D,
+    end_point: InputVector2D,
+    obsticles: Vec<InputVector2D>,
     offset: OffsetPrecision,
 }
 
@@ -15,8 +17,14 @@ pub struct Test {
 impl Test {
     fn new(_owner: &Node) -> Self {
         Test {
-            start_point: Vector2D::new(0 as CoordinatePrecision, 0 as CoordinatePrecision),
-            end_point: Vector2D::new(0 as CoordinatePrecision, 0 as CoordinatePrecision),
+            start_point: InputVector2D::new(
+                0 as InputCoordinatePrecision,
+                0 as InputCoordinatePrecision,
+            ),
+            end_point: InputVector2D::new(
+                0 as InputCoordinatePrecision,
+                0 as InputCoordinatePrecision,
+            ),
             obsticles: vec![],
             offset: 2 as OffsetPrecision,
         }
@@ -37,44 +45,50 @@ impl Test {
         offset: OffsetPrecision,
     ) {
         // --- Converting --- \\
-        self.start_point = Vector2D::new(
+        self.start_point = InputVector2D::new(
             start_point.x.clamp(
-                CoordinatePrecision::MIN as f32,
-                CoordinatePrecision::MAX as f32,
-            ) as CoordinatePrecision,
+                InputCoordinatePrecision::MIN as f32,
+                InputCoordinatePrecision::MAX as f32,
+            ) as InputCoordinatePrecision,
             start_point.y.clamp(
-                CoordinatePrecision::MIN as f32,
-                CoordinatePrecision::MAX as f32,
-            ) as CoordinatePrecision,
+                InputCoordinatePrecision::MIN as f32,
+                InputCoordinatePrecision::MAX as f32,
+            ) as InputCoordinatePrecision,
         );
-        self.end_point = Vector2D::new(
+        self.end_point = InputVector2D::new(
             end_point.x.clamp(
-                CoordinatePrecision::MIN as f32,
-                CoordinatePrecision::MAX as f32,
-            ) as CoordinatePrecision,
+                InputCoordinatePrecision::MIN as f32,
+                InputCoordinatePrecision::MAX as f32,
+            ) as InputCoordinatePrecision,
             end_point.y.clamp(
-                CoordinatePrecision::MIN as f32,
-                CoordinatePrecision::MAX as f32,
-            ) as CoordinatePrecision,
+                InputCoordinatePrecision::MIN as f32,
+                InputCoordinatePrecision::MAX as f32,
+            ) as InputCoordinatePrecision,
         );
         self.obsticles = {
-            let mut res = Vec::<Vector2D>::with_capacity(obsticles.len() as usize);
+            let mut res = Vec::<InputVector2D>::with_capacity(obsticles.len() as usize);
             for i in 0..obsticles.len() {
                 res.push(
                     obsticles
                         .get(i)
                         .clamp(
-                            Vector2D::new(CoordinatePrecision::MIN, CoordinatePrecision::MIN)
-                                .cast(),
-                            Vector2D::new(CoordinatePrecision::MAX, CoordinatePrecision::MAX)
-                                .cast(),
+                            InputVector2D::new(
+                                InputCoordinatePrecision::MIN,
+                                InputCoordinatePrecision::MIN,
+                            )
+                            .cast(),
+                            InputVector2D::new(
+                                InputCoordinatePrecision::MAX,
+                                InputCoordinatePrecision::MAX,
+                            )
+                            .cast(),
                         )
                         .cast(),
                 );
             }
             res
         };
-        self.offset = offset.clamp(OffsetPrecision::MIN, OffsetPrecision::MAX);
+        self.offset = offset;
     }
 
     #[export]

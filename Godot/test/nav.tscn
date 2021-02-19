@@ -31,7 +31,8 @@ func order_nav2d() -> void:
 	var obsticles : PoolVector2Array = []
 	for c in $Obsticles.get_children():
 		obsticles.append((c as Position2D).global_position)
-	$Test.set_obsticles(sp, ep, obsticles, 8)
+	var offset : int = 20
+	$Test.set_obsticles(sp, ep, obsticles, offset)
 	
 	var navpoly : NavigationPolygon = $Test.build_navpoly()
 	
@@ -76,9 +77,6 @@ outlines = [ PoolVector2Array( 0, 0, 25, 0, 25, 25, 0, 25 ) ]
 
 [node name="Node" type="Node"]
 script = SubResource( 1 )
-__meta__ = {
-"_edit_horizontal_guides_": [ -1.0 ]
-}
 
 [node name="Test" type="Node" parent="."]
 script = SubResource( 2 )
@@ -95,7 +93,6 @@ __meta__ = {
 navpoly = SubResource( 3 )
 
 [node name="Obsticles" type="Node2D" parent="."]
-visible = false
 
 [node name="Position2D" type="Position2D" parent="Obsticles"]
 position = Vector2( 9, 10 )
@@ -117,6 +114,12 @@ __meta__ = {
 
 [node name="Position2D4" type="Position2D" parent="Obsticles"]
 position = Vector2( 11, 9 )
+__meta__ = {
+"_gizmo_extents_": 0.6
+}
+
+[node name="Position2D5" type="Position2D" parent="Obsticles"]
+position = Vector2( 12, 10 )
 __meta__ = {
 "_gizmo_extents_": 0.6
 }
