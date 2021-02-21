@@ -14,15 +14,11 @@ pub struct ECSHandle {
 
 impl ECSHandle {
     pub fn new() -> Self {
-        let world = sys::make_world();
-        let resources = sys::make_resources();
-        let schedule = sys::make_schedule();
-        let registry = sys::make_registry();
         ECSHandle {
-            world,
-            resources,
-            schedule,
-            registry,
+            world: sys::make_world(),
+            resources: sys::make_resources(),
+            schedule: sys::make_schedule(),
+            registry: sys::make_registry(),
         }
     }
 
