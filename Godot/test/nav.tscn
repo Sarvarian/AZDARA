@@ -6,7 +6,16 @@
 script/source = "extends Node
 
 
+var sp : Vector2 = Vector2.ONE
+var ep : Vector2 = Vector2(25, 25)
+var obsticles : PoolVector2Array = []
+var offset : int = 20
+var print_navpoly : bool = false
+
+
 func _ready() -> void:
+	for c in $Obsticles.get_children():
+		obsticles.append((c as Position2D).global_position)
 	order_nav2d()
 	pass
 
@@ -15,9 +24,15 @@ func _process(_delta : float) -> void:
 	order_nav2d()
 	pass
 
+
+func _physics_process(_delta : float) -> void:
+	order_nav2d()
+	pass
+
+
 func _unhandled_key_input(event : InputEventKey) -> void:
 	if event.is_action_pressed(\"ui_accept\"):
-		order_nav2d()
+		print_navpoly = true
 	pass
 
 
@@ -26,18 +41,14 @@ func order_nav2d() -> void:
 		$Navs.remove_child(c)
 		c.queue_free()
 	
-	var sp : Vector2 = Vector2.ONE
-	var ep : Vector2 = Vector2(25, 25)
-	var obsticles : PoolVector2Array = []
-	for c in $Obsticles.get_children():
-		obsticles.append((c as Position2D).global_position)
-	var offset : int = 20
 	$Test.set_obsticles(sp, ep, obsticles, offset)
 	
 	var navpoly : NavigationPolygon = $Test.build_navpoly()
 	
-#	for o in navpoly.get_outline_count():
-#		print(navpoly.get_outline(o))
+	if print_navpoly:
+		for o in navpoly.get_outline_count():
+			print(navpoly.get_outline(o))
+		print_navpoly = false
 	
 	var npi : NavigationPolygonInstance = NavigationPolygonInstance.new()
 	npi.navpoly = navpoly
