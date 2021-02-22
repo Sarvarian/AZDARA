@@ -7,11 +7,13 @@ onready var player_viewport_scene : PackedScene = load(Addresses.PLAYER_VIEWPORT
 onready var grid : GridContainer = $Panel/MarginContainer/GridContainer
 
 
-func add_player_camera(target : Node2D, uuid : String) -> void:
+func add_player_camera(target : Node2D, uuid : String, world_2d : World2D) -> void:
 	var player_viewport : PlayerViewport = player_viewport_scene.instance()
+	player_viewport.set_world_2d(world_2d)
 	player_viewport.set_camera_target(target)
 	grid.add_child(player_viewport)
 	viewports[uuid] = player_viewport
+	check_grid_child_count()
 
 
 func remove_viewport(uuid : String) -> void:
@@ -26,3 +28,12 @@ func clear_viewports() -> void:
 		grid.remove_child(v)
 		(v as Node).queue_free()
 	viewports.clear()
+
+
+func check_grid_child_count() -> void:
+	if grid.get_child_count() == 1:
+		grid.columns = 1
+	else:
+		grid.columns = 2
+
+

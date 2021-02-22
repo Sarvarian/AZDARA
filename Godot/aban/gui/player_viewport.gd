@@ -1,6 +1,11 @@
 class_name PlayerViewport
-extends MarginContainer
+extends ViewportContainer
+
+
+func set_world_2d(world_2d : World2D) -> void:
+	$Viewport.set_world_2d(world_2d)
 
 
 func set_camera_target(target : Node2D) -> void:
-	$ViewportContainer/Viewport/PlayerCamera.target = target
+	$Viewport/PlayerCamera.target = target
+
