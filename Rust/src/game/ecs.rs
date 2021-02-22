@@ -42,7 +42,7 @@ impl ECSHandle {
         if let Ok(json) = serde_json::to_value(
             &self
                 .world
-                .as_serializable(legion::component::<com::DistrictId>(), &self.registry),
+                .as_serializable(legion::component::<uuid::Uuid>(), &self.registry),
         ) {
             Variant::from_str(json.to_string())
         } else {

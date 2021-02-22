@@ -15,3 +15,4 @@ legion = "0.3.1"
 euclid = "0.22.1"
 serde = "1.0.123"
 serde_json = "1.0.62"
+uuid = { version = "0.8.2", features = ["serde", "v4"] }

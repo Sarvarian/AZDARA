@@ -1,10 +1,17 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://aban/lib/game.gdns" type="Script" id=1]
-[ext_resource path="res://contents/icon.png" type="Texture" id=2]
+[ext_resource path="res://aban/main/scene.gd" type="Script" id=2]
+[ext_resource path="res://aban/gui/gui.tscn" type="PackedScene" id=3]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node
+
+
+var entities : Dictionary = {}
+
+onready var entity_scene : PackedScene = load(Addresses.ENTITY_SCENE)
+onready var scene : Node = $Scene
 
 
 func _ready() -> void:
@@ -12,24 +19,48 @@ func _ready() -> void:
 
 
 func _process(_delta : float) -> void:
+#	build_scene_from_game_state()
+	pass
+
+
+func _physics_process(_delta : float) -> void:
 	pass
 
 
 func _input(event : InputEvent) -> void:
 	if event.is_action_pressed(\"ui_accept\"):
-		var state : String = $Game.state()
-		var save_game = File.new()
-		save_game.open(\"user://savegame.json\", File.WRITE)
-		save_game.store_line(state)
-		save_game.close()
-		var dic : Dictionary = parse_json(state)
-		var entities : Dictionary = dic.entities
-#		print(dic)
-		for entity in entities.values():
-			var e : Dictionary = entity
-			if e.has(\"player\"):
-				$icon.position = Vector2(e.movable.x, e.movable.y) * 50
+		save_game_state()
+		build_scene_from_game_state()
+#		print(entities)
 	pass
+
+
+func build_scene_from_game_state() -> void:
+	$GUI.clear_viewports()
+	scene.queue_free()
+	remove_child(scene)
+	scene = Node.new()
+	add_child(scene)
+	var datas : Array = parse_json($Game.state()).entities.values()
+	for data in datas:
+		var entity : Node = EntityBuilder.build(data, entity_scene)
+		if data.has(\"player\"):
+			$GUI.add_player_camera(entity.get_visual(), data.uuid)
+		entities[data.uuid] = entity
+		scene.add_child(entity)
+
+
+func save_game_state() -> void:
+	var state : String = $Game.state()
+	var save_game = File.new()
+	save_game.open(\"user://savegame.json\", File.WRITE)
+	save_game.store_line(state)
+	save_game.close()
+
+
+
+
+
 
 "
 
@@ -39,6 +70,7 @@ script = SubResource( 1 )
 [node name="Game" type="Node" parent="."]
 script = ExtResource( 1 )
 
-[node name="icon" type="Sprite" parent="."]
-position = Vector2( -100, -100 )
-texture = ExtResource( 2 )
+[node name="Scene" type="Node" parent="."]
+script = ExtResource( 2 )
+
+[node name="GUI" parent="." instance=ExtResource( 3 )]

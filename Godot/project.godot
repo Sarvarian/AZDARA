@@ -8,15 +8,50 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Object",
+"class": "Addresses",
+"language": "GDScript",
+"path": "res://aban/static_objects/addresses.gd"
+}, {
+"base": "Node",
+"class": "Entity",
+"language": "GDScript",
+"path": "res://aban/entity/entity.gd"
+}, {
+"base": "Object",
+"class": "EntityBuilder",
+"language": "GDScript",
+"path": "res://aban/entity/builder.gd"
+}, {
+"base": "Camera2D",
+"class": "PlayerCamera",
+"language": "GDScript",
+"path": "res://aban/player_camera/player_camera.gd"
+}, {
+"base": "Node",
+"class": "PlayerInput",
+"language": "GDScript",
+"path": "res://aban/entity/player_input.gd"
+}, {
+"base": "MarginContainer",
+"class": "PlayerViewport",
+"language": "GDScript",
+"path": "res://aban/gui/player_viewport.gd"
+} ]
 _global_script_class_icons={
-
+"Addresses": "",
+"Entity": "",
+"EntityBuilder": "",
+"PlayerCamera": "",
+"PlayerInput": "",
+"PlayerViewport": ""
 }
 
 [application]
 
 config/name="azdara"
-run/main_scene="res://test/nav.tscn"
+run/main_scene="res://aban/main/main.tscn"
 
 [debug]
 
@@ -29,7 +64,7 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray(  )
+enabled=PoolStringArray( "smoothing" )
 
 [physics]
 
