@@ -8,9 +8,38 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Object",
+"class": "Addresses",
+"language": "GDScript",
+"path": "res://aban/static_objects/addresses.gd"
+}, {
+"base": "Node",
+"class": "Entity",
+"language": "GDScript",
+"path": "res://aban/entity/entity.gd"
+}, {
+"base": "Object",
+"class": "EntityBuilder",
+"language": "GDScript",
+"path": "res://aban/entity/builder.gd"
+}, {
+"base": "Node",
+"class": "PlayerInput",
+"language": "GDScript",
+"path": "res://aban/entity/player_input.gd"
+}, {
+"base": "ViewportContainer",
+"class": "PlayerViewport",
+"language": "GDScript",
+"path": "res://aban/gui/player_viewport.gd"
+} ]
 _global_script_class_icons={
-
+"Addresses": "",
+"Entity": "",
+"EntityBuilder": "",
+"PlayerInput": "",
+"PlayerViewport": ""
 }
 
 [application]
@@ -24,16 +53,12 @@ settings/stdout/verbose_stdout=true
 
 [display]
 
-window/size/width=52
-window/size/height=52
-window/size/test_width=500
-window/size/test_height=500
 window/stretch/mode="2d"
 window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray(  )
+enabled=PoolStringArray( "smoothing" )
 
 [physics]
 

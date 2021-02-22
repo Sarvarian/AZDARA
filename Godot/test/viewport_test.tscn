@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node
+
+
+onready var scene : Viewport = $ViewportContainer/Scene
+onready var grid : Control = $Panel/MarginContainer
+var player_viewport_scene : PackedScene = preload(\"res://aban/gui/player_viewport.tscn\")
+var entity_scene : PackedScene = load(Addresses.ENTITY_SCENE)
+
+
+func _input(event : InputEvent) -> void:
+	if event.is_action_pressed(\"ui_accept\"):
+		var entity : Node = entity_scene.instance()
+		var visual : Node2D = (entity as Entity).get_visual()
+		var player_viewport : PlayerViewport = player_viewport_scene.instance()
+		player_viewport.set_world_2d(scene.world_2d)
+		player_viewport.set_camera_target(visual)
+		grid.add_child(player_viewport)
+		scene.add_child(entity)
+	pass
+"
+
+[sub_resource type="World" id=2]
+
+[node name="Node" type="Node"]
+script = SubResource( 1 )
+
+[node name="ViewportContainer" type="ViewportContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+stretch = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Scene" type="Viewport" parent="ViewportContainer"]
+size = Vector2( 1024, 600 )
+world = SubResource( 2 )
+transparent_bg = true
+handle_input_locally = false
+render_target_update_mode = 3
+
+[node name="Panel" type="Panel" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 50.0
+margin_top = 50.0
+margin_right = -50.0
+margin_bottom = -50.0

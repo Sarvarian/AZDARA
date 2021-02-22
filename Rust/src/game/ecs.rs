@@ -14,15 +14,11 @@ pub struct ECSHandle {
 
 impl ECSHandle {
     pub fn new() -> Self {
-        let world = sys::make_world();
-        let resources = sys::make_resources();
-        let schedule = sys::make_schedule();
-        let registry = sys::make_registry();
         ECSHandle {
-            world,
-            resources,
-            schedule,
-            registry,
+            world: sys::make_world(),
+            resources: sys::make_resources(),
+            schedule: sys::make_schedule(),
+            registry: sys::make_registry(),
         }
     }
 
@@ -46,7 +42,7 @@ impl ECSHandle {
         if let Ok(json) = serde_json::to_value(
             &self
                 .world
-                .as_serializable(legion::component::<com::DistrictId>(), &self.registry),
+                .as_serializable(legion::component::<uuid::Uuid>(), &self.registry),
         ) {
             Variant::from_str(json.to_string())
         } else {

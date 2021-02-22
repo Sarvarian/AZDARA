@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node
+
+func _ready() -> void:
+	var polygon := NavigationPolygon.new()
+	var vertices := PoolVector2Array([Vector2(0, 0), Vector2(0, 50), Vector2(50, 50), Vector2(50, 0)])
+	polygon.set_vertices(vertices)
+	var indices : PoolIntArray = [1, 2, 0]
+	polygon.add_polygon(indices)
+	var npi := NavigationPolygonInstance.new()
+	npi.navpoly = polygon
+	var nav2d := Navigation2D.new()
+	nav2d.add_child(npi)
+	add_child(nav2d)
+pass
+"
+
+[node name="Node" type="Node"]
+script = SubResource( 1 )
