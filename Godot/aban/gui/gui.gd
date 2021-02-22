@@ -31,9 +31,14 @@ func clear_viewports() -> void:
 
 
 func check_grid_child_count() -> void:
-	if grid.get_child_count() == 1:
+	var count : int = grid.get_child_count()
+	if count < 2:
 		grid.columns = 1
-	else:
+	elif count < 5:
 		grid.columns = 2
+	elif count < 10:
+		grid.columns = 3
+	else:
+		grid.columns = 4
 
 
