@@ -40,10 +40,10 @@ pub fn build(
                 map.insert(
                     o,
                     vec![
-                        vertex0(&o, offset),
-                        vertex1(&o, offset),
-                        vertex2(&o, offset),
-                        vertex3(&o, offset),
+                        VERTICES[0](&o, offset),
+                        VERTICES[1](&o, offset),
+                        VERTICES[2](&o, offset),
+                        VERTICES[3](&o, offset),
                     ],
                 );
                 map
@@ -55,20 +55,20 @@ pub fn build(
         obsticles.insert(
             o,
             vec![
-                vertex0(&o, offset),
-                vertex1(&o, offset),
-                vertex2(&o, offset),
-                vertex3(&o, offset),
+                VERTICES[0](&o, offset),
+                VERTICES[1](&o, offset),
+                VERTICES[2](&o, offset),
+                VERTICES[3](&o, offset),
             ],
         );
         let o = Vector2D::new(i, end_point.y);
         obsticles.insert(
             o,
             vec![
-                vertex0(&o, offset),
-                vertex1(&o, offset),
-                vertex2(&o, offset),
-                vertex3(&o, offset),
+                VERTICES[0](&o, offset),
+                VERTICES[1](&o, offset),
+                VERTICES[2](&o, offset),
+                VERTICES[3](&o, offset),
             ],
         );
     }
@@ -77,20 +77,20 @@ pub fn build(
         obsticles.insert(
             o,
             vec![
-                vertex0(&o, offset),
-                vertex1(&o, offset),
-                vertex2(&o, offset),
-                vertex3(&o, offset),
+                VERTICES[0](&o, offset),
+                VERTICES[1](&o, offset),
+                VERTICES[2](&o, offset),
+                VERTICES[3](&o, offset),
             ],
         );
         let o = Vector2D::new(end_point.x, i);
         obsticles.insert(
             o,
             vec![
-                vertex0(&o, offset),
-                vertex1(&o, offset),
-                vertex2(&o, offset),
-                vertex3(&o, offset),
+                VERTICES[0](&o, offset),
+                VERTICES[1](&o, offset),
+                VERTICES[2](&o, offset),
+                VERTICES[3](&o, offset),
             ],
         );
     }
@@ -115,36 +115,39 @@ pub fn build(
     navpoly
 }
 
-fn vertex0(obsticle: &Vector2D, offset: OffsetPrecision) -> Vector2D {
-    Vector2D::new(
-        obsticle.x * offset as CoordinatePrecision,
-        (obsticle.y * offset as CoordinatePrecision) + offset as CoordinatePrecision,
-    )
-}
-
-fn vertex1(obsticle: &Vector2D, offset: OffsetPrecision) -> Vector2D {
-    Vector2D::new(
-        obsticle.x * offset as CoordinatePrecision,
-        obsticle.y * offset as CoordinatePrecision,
-    )
-}
-
-fn vertex2(obsticle: &Vector2D, offset: OffsetPrecision) -> Vector2D {
-    Vector2D::new(
-        (obsticle.x * offset as CoordinatePrecision) + offset as CoordinatePrecision,
-        obsticle.y * offset as CoordinatePrecision,
-    )
-}
-
-fn vertex3(obsticle: &Vector2D, offset: OffsetPrecision) -> Vector2D {
-    Vector2D::new(
-        (obsticle.x * offset as CoordinatePrecision) + offset as CoordinatePrecision,
-        (obsticle.y * offset as CoordinatePrecision) + offset as CoordinatePrecision,
-    )
-}
+const VERTICES: [fn(&Vector2D, u8) -> Vector2D; 4] = [
+    // vertex0,
+    |obsticle: &Vector2D, offset: OffsetPrecision| -> Vector2D {
+        Vector2D::new(
+            obsticle.x * offset as CoordinatePrecision,
+            (obsticle.y * offset as CoordinatePrecision) + offset as CoordinatePrecision,
+        )
+    },
+    // vertex1,
+    |obsticle: &Vector2D, offset: OffsetPrecision| -> Vector2D {
+        Vector2D::new(
+            obsticle.x * offset as CoordinatePrecision,
+            obsticle.y * offset as CoordinatePrecision,
+        )
+    },
+    // vertex2,
+    |obsticle: &Vector2D, offset: OffsetPrecision| -> Vector2D {
+        Vector2D::new(
+            (obsticle.x * offset as CoordinatePrecision) + offset as CoordinatePrecision,
+            obsticle.y * offset as CoordinatePrecision,
+        )
+    },
+    // vertex3,
+    |obsticle: &Vector2D, offset: OffsetPrecision| -> Vector2D {
+        Vector2D::new(
+            (obsticle.x * offset as CoordinatePrecision) + offset as CoordinatePrecision,
+            (obsticle.y * offset as CoordinatePrecision) + offset as CoordinatePrecision,
+        )
+    },
+];
 
 mod outline_rendering {
-    use super::{vertex0, vertex1, vertex2, vertex3, HashMap, OffsetPrecision, Outline, Vector2D};
+    use super::{HashMap, OffsetPrecision, Outline, Vector2D, VERTICES};
 
     /// pub const LEFT: u8 = 0u8;
     /// pub const LETF_UP: u8 = 1u8;
@@ -193,15 +196,11 @@ mod outline_rendering {
         obsticles: &mut HashMap<Vector2D, Vec<Vector2D>>,
         offset: OffsetPrecision,
     ) -> Result<(&Vector2D, u8), ()> {
-        type NFP = fn(&Vector2D) -> Vector2D;
-        let neighbors: [NFP; 4] = [left_neighbor, up_neighbor, right_neighbor, down_neighbor];
-        type VDFP = fn(&Vector2D, u8) -> Vector2D;
-        let vertex_direction: [VDFP; 4] = [vertex0, vertex1, vertex2, vertex3];
         for (o, vertices) in obsticles.iter() {
             for index in 0..4u8 {
-                if !obsticles.contains_key(&neighbors[index as usize](o)) {
+                if !obsticles.contains_key(&NEIGHBORS[index as usize](o)) {
                     for v in vertices.into_iter() {
-                        if v == &vertex_direction[index as usize](o, offset) {
+                        if v == &VERTICES[index as usize](o, offset) {
                             return Ok((o, (index * 2) % 8));
                         }
                     }
@@ -217,12 +216,9 @@ mod outline_rendering {
         direction: u8,
         offset: OffsetPrecision,
     ) -> Result<usize, ()> {
-        type FP = fn(&Vector2D, u8) -> Vector2D;
-        let vertex_direction: [FP; 4] = [vertex0, vertex1, vertex2, vertex3];
-
         if let Some(vertices) = obsticles.get(obsticle) {
             for (index, v) in vertices.iter().enumerate() {
-                if &vertex_direction[(direction / 2) as usize](obsticle, offset) == v {
+                if &VERTICES[(direction / 2) as usize](obsticle, offset) == v {
                     return Ok(index);
                 }
             }
@@ -236,20 +232,8 @@ mod outline_rendering {
         obsticle: Vector2D,
         direction: u8,
     ) -> (Vector2D, u8) {
-        type NFP = fn(&Vector2D) -> Vector2D;
-        let neighbors: [NFP; 8] = [
-            left_neighbor,
-            left_up_neighbor,
-            up_neighbor,
-            up_right_neighbor,
-            right_neighbor,
-            right_down_neighbor,
-            down_neighbor,
-            down_left_neighbor,
-        ];
-
         for i in 1..3u8 {
-            let neighbor = neighbors[((direction + i) % 8) as usize](&obsticle);
+            let neighbor = NEIGHBORS[((direction + i) % 8) as usize](&obsticle);
             if obsticles.contains_key(&neighbor) {
                 return (neighbor, (direction + (i * 2) + 4) % 8);
             }
@@ -258,35 +242,22 @@ mod outline_rendering {
         (obsticle, (direction + 2) % 8)
     }
 
-    pub fn left_neighbor(obsticle: &Vector2D) -> Vector2D {
-        Vector2D::new(obsticle.x - 1, obsticle.y)
-    }
-
-    pub fn left_up_neighbor(obsticle: &Vector2D) -> Vector2D {
-        Vector2D::new(obsticle.x - 1, obsticle.y - 1)
-    }
-
-    pub fn up_neighbor(obsticle: &Vector2D) -> Vector2D {
-        Vector2D::new(obsticle.x, obsticle.y - 1)
-    }
-
-    pub fn up_right_neighbor(obsticle: &Vector2D) -> Vector2D {
-        Vector2D::new(obsticle.x + 1, obsticle.y - 1)
-    }
-
-    pub fn right_neighbor(obsticle: &Vector2D) -> Vector2D {
-        Vector2D::new(obsticle.x + 1, obsticle.y)
-    }
-
-    pub fn right_down_neighbor(obsticle: &Vector2D) -> Vector2D {
-        Vector2D::new(obsticle.x + 1, obsticle.y + 1)
-    }
-
-    pub fn down_neighbor(obsticle: &Vector2D) -> Vector2D {
-        Vector2D::new(obsticle.x, obsticle.y + 1)
-    }
-
-    pub fn down_left_neighbor(obsticle: &Vector2D) -> Vector2D {
-        Vector2D::new(obsticle.x - 1, obsticle.y + 1)
-    }
+    const NEIGHBORS: [fn(&Vector2D) -> Vector2D; 8] = [
+        // left_neighbor,
+        |obsticle: &Vector2D| -> Vector2D { Vector2D::new(obsticle.x - 1, obsticle.y) },
+        // left_up_neighbor,
+        |obsticle: &Vector2D| -> Vector2D { Vector2D::new(obsticle.x - 1, obsticle.y - 1) },
+        // up_neighbor,
+        |obsticle: &Vector2D| -> Vector2D { Vector2D::new(obsticle.x, obsticle.y - 1) },
+        // up_right_neighbor,
+        |obsticle: &Vector2D| -> Vector2D { Vector2D::new(obsticle.x + 1, obsticle.y - 1) },
+        // right_neighbor,
+        |obsticle: &Vector2D| -> Vector2D { Vector2D::new(obsticle.x + 1, obsticle.y) },
+        // right_down_neighbor,
+        |obsticle: &Vector2D| -> Vector2D { Vector2D::new(obsticle.x + 1, obsticle.y + 1) },
+        // down_neighbor,
+        |obsticle: &Vector2D| -> Vector2D { Vector2D::new(obsticle.x, obsticle.y + 1) },
+        // down_left_neighbor,
+        |obsticle: &Vector2D| -> Vector2D { Vector2D::new(obsticle.x - 1, obsticle.y + 1) },
+    ];
 }
