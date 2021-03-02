@@ -7,11 +7,10 @@ pub struct Time {
 
 impl Time {
     pub fn new() -> Self {
-        let os = gdnative::api::OS::godot_singleton();
         Time {
             speed: 1f64,
             counter: 1f64,
-            os,
+            os: gdnative::api::OS::godot_singleton(),
             last_tick_time: 0,
         }
     }
