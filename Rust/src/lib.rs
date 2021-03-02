@@ -1,6 +1,7 @@
 use gdnative::{godot_init, nativescript::InitHandle};
 
 mod game;
+mod gnab;
 mod helpers;
 mod test;
 

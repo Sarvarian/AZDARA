@@ -1,4 +1,3 @@
-use euclid::*;
 use gdnative::prelude::*;
 
 mod com;
@@ -31,7 +30,7 @@ impl ECSHandle {
             name: "spawn_player",
             args: &[SignalArgument {
                 name: "position",
-                default: Variant::from_vector2(&Vector2D::new(5f32, 5f32)),
+                default: Variant::from_vector2(&Vector2::new(5f32, 5f32)),
                 export_info: ExportInfo::new(VariantType::Vector2),
                 usage: PropertyUsage::DEFAULT,
             }],
