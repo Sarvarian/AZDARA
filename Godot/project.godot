@@ -13,33 +13,9 @@ _global_script_classes=[ {
 "class": "Addresses",
 "language": "GDScript",
 "path": "res://aban/static_objects/addresses.gd"
-}, {
-"base": "Node",
-"class": "Entity",
-"language": "GDScript",
-"path": "res://aban/entity/entity.gd"
-}, {
-"base": "Object",
-"class": "EntityBuilder",
-"language": "GDScript",
-"path": "res://aban/entity/builder.gd"
-}, {
-"base": "Node",
-"class": "PlayerInput",
-"language": "GDScript",
-"path": "res://aban/entity/player_input.gd"
-}, {
-"base": "ViewportContainer",
-"class": "PlayerViewport",
-"language": "GDScript",
-"path": "res://aban/gui/player_viewport.gd"
 } ]
 _global_script_class_icons={
-"Addresses": "",
-"Entity": "",
-"EntityBuilder": "",
-"PlayerInput": "",
-"PlayerViewport": ""
+"Addresses": ""
 }
 
 [application]
