@@ -38,6 +38,3 @@ script = SubResource( 1 )
 
 [node name="Game" type="Node" parent="."]
 script = ExtResource( 1 )
-
-[node name="Game2" type="Node" parent="."]
-script = ExtResource( 1 )
