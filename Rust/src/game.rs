@@ -1,5 +1,6 @@
 use gdnative::prelude::*;
 use legion::serialize::Canon;
+use serde::de::DeserializeSeed;
 
 mod com;
 mod res;
@@ -10,7 +11,6 @@ type SerializeFilter = com::Player;
 #[derive(NativeClass)]
 #[inherit(Object)]
 pub struct Game {
-    game_name: GodotString,
     world: legion::World,
     resources: legion::Resources,
     process_schedule: legion::Schedule,
@@ -25,7 +25,6 @@ impl Game {
         let world = gdnative::api::World::new();
         let space = world.space();
         Game {
-            game_name: GodotString::from_str("game"),
             world: sys::make_world(),
             resources: sys::make_resources(space),
             process_schedule: sys::make_process_schedule(),
@@ -36,9 +35,7 @@ impl Game {
     }
 
     #[export]
-    fn ready(&mut self, _owner: &Object, game_name: GodotString) {
-        self.game_name = game_name;
-    }
+    fn ready(&mut self, _owner: &Object) {}
 
     #[export]
     fn process(&mut self, _owner: &Object, delta: f64) {
@@ -52,11 +49,6 @@ impl Game {
         self.set_delta_resource(delta);
         self.physics_process_schedule
             .execute(&mut self.world, &mut self.resources);
-    }
-
-    #[export]
-    fn change_game_name(&mut self, _owner: &Object, game_name: GodotString) {
-        self.game_name = game_name;
     }
 
     #[export]
@@ -79,7 +71,7 @@ impl Game {
     }
 
     #[export]
-    pub fn save(&self, _owner: &Object) {
+    pub fn save_game(&self, _owner: &Object, game_name: GodotString) {
         let entity_serializer = Canon::default();
         if let Ok(save) = bincode::serialize(&self.world.as_serializable(
             legion::component::<SerializeFilter>(),
@@ -87,20 +79,62 @@ impl Game {
             &entity_serializer,
         )) {
             let file = gdnative::api::File::new();
-            let save_path = GodotString::from_str(format!("user://{}", &self.game_name));
+            let save_path = GodotString::from_str(format!("user://{}", game_name.to_lowercase()));
             match file.open(save_path.clone(), 2) {
                 Err(err) => {
                     godot_error!("Game Save {} Failed, Because {}", save_path, err);
                 }
                 Ok(_) => {
                     file.store_buffer(TypedArray::from_vec(save));
-                    godot_print!("Game Saved!")
+                    godot_print!("Game Saved Successfully!")
                 }
             }
             file.close();
         } else {
             godot_error!("bincode serialization failed")
         }
+    }
+
+    #[export]
+    pub fn load_game(&mut self, _owner: &Object, game_name: GodotString) {
+        let file = gdnative::api::File::new();
+        let load_path = GodotString::from_str(format!("user://{}", game_name.to_lowercase()));
+        match file.open(load_path.clone(), 1) {
+            Err(err) => {
+                godot_error!("Game Load {} Failed, Because {}", load_path, err);
+            }
+            Ok(_) => {
+                let load = file.get_buffer(file.get_len());
+                let load = (0..load.len()).fold(
+                    Vec::<u8>::with_capacity(load.len() as usize),
+                    |mut vec, i| {
+                        vec.push(load.get(i));
+                        vec
+                    },
+                );
+                let entity_serializer = Canon::default();
+                let mut des =
+                    bincode::Deserializer::from_slice(load.as_slice(), bincode::options());
+                match self
+                    .registry
+                    .as_deserialize(&entity_serializer)
+                    .deserialize(&mut des)
+                {
+                    Ok(load) => {
+                        self.world = load;
+                        godot_print!("Game Loaded Successfully!");
+                    }
+                    Err(err) => {
+                        godot_error!(
+                            "Deserializing Load {} Failed, Because of {}",
+                            load_path,
+                            err
+                        );
+                    }
+                }
+            }
+        }
+        file.close();
     }
 
     fn set_delta_resource(&mut self, delta: f64) {
