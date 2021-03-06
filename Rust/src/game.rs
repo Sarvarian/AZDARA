@@ -130,6 +130,8 @@ impl Game {
                 {
                     Ok(load) => {
                         self.world = load;
+                        self.ready_schedule
+                            .execute(&mut self.world, &mut self.resources);
                         godot_print!("Game Loaded Successfully!");
                     }
                     Err(err) => {
