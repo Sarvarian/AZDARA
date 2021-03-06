@@ -15,6 +15,7 @@ pub fn make_resources(space: gdnative::core_types::Rid) -> Resources {
     let mut res = Resources::default();
 
     res.insert(super::srm::GodotServerResourceManager::new());
+    res.insert(Input::new());
     res.insert(WorldSpace::new(space));
 
     res
