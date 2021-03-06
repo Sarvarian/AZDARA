@@ -1,69 +1,86 @@
+use std::sync::mpsc::{self, Receiver};
+
 use gdnative::prelude::*;
 use legion::serialize::Canon;
 use serde::de::DeserializeSeed;
 
 mod com;
+mod msg;
 mod res;
 mod srm;
 mod sys;
 
+type Owner = Object;
 type SerializeFilter = com::Player;
 
 #[derive(NativeClass)]
-#[inherit(Object)]
+#[inherit(Owner)]
 pub struct Game {
     world: legion::World,
     resources: legion::Resources,
     ready_schedule: legion::Schedule,
     process_schedule: legion::Schedule,
     physics_process_schedule: legion::Schedule,
+    process_message_receiver: Receiver<msg::ECSMessages>,
+    physics_process_message_receiver: Receiver<msg::ECSMessages>,
     registry: legion::Registry<String>,
     godot_world: Ref<gdnative::api::World, gdnative::thread_access::Shared>,
 }
 
 #[methods]
 impl Game {
-    fn new(_owner: &Object) -> Self {
+    fn new(_owner: &Owner) -> Self {
         let world = gdnative::api::World::new();
         let space = world.space();
+        let (p_tx, p_rx) = mpsc::channel();
+        let (pp_tx, pp_rx) = mpsc::channel();
         Game {
             world: sys::make_world(),
-            resources: sys::make_resources(space),
+            resources: sys::make_resources(space, p_tx, pp_tx),
             ready_schedule: sys::make_ready_schedule(),
             process_schedule: sys::make_process_schedule(),
             physics_process_schedule: sys::make_physics_process_schedule(),
+            process_message_receiver: p_rx,
+            physics_process_message_receiver: pp_rx,
             registry: sys::make_registry(),
             godot_world: world.into_shared(),
         }
     }
 
     #[export]
-    fn ready(&mut self, _owner: &Object) {
+    fn ready(&mut self, _owner: &Owner) {
         self.ready_schedule
             .execute(&mut self.world, &mut self.resources);
     }
 
     #[export]
-    fn process(&mut self, _owner: &Object, delta: f64) {
+    fn process(&mut self, owner: &Owner, delta: f64) {
         self.set_delta_resource(delta);
         self.process_schedule
             .execute(&mut self.world, &mut self.resources);
+        self.ecs_message_process(owner, &self.process_message_receiver)
     }
 
     #[export]
-    fn physics_process(&mut self, _owner: &Object, delta: f64) {
+    fn physics_process(&mut self, owner: &Owner, delta: f64) {
         self.set_delta_resource(delta);
         self.physics_process_schedule
             .execute(&mut self.world, &mut self.resources);
+        self.ecs_message_process(owner, &self.physics_process_message_receiver)
     }
 
     #[export]
-    fn get_world(&self, _owner: &Object) -> Variant {
+    fn input(&self, _owner: &Owner, _event: Ref<gdnative::api::InputEvent>) {
+        // let input = gdnative::api::Input::godot_singleton();
+    }
+
+    #[export]
+    fn get_world(&self, _owner: &Owner) -> Variant {
         Variant::from_object(&self.godot_world)
     }
 
     #[export]
-    pub fn get_state(&self, _owner: &Object) -> Variant {
+    pub fn get_state(&self, _owner: &Owner) -> Variant {
         let entity_serializer = Canon::default();
         if let Ok(json) = serde_json::to_value(&self.world.as_serializable(
             legion::component::<SerializeFilter>(),
@@ -77,7 +94,7 @@ impl Game {
     }
 
     #[export]
-    pub fn save_game(&self, _owner: &Object, game_name: GodotString) {
+    pub fn save_game(&self, _owner: &Owner, game_name: GodotString) {
         let entity_serializer = Canon::default();
         if let Ok(save) = bincode::serialize(&self.world.as_serializable(
             legion::component::<SerializeFilter>(),
@@ -103,7 +120,7 @@ impl Game {
     }
 
     #[export]
-    pub fn load_game(&mut self, _owner: &Object, game_name: GodotString) {
+    pub fn load_game(&mut self, _owner: &Owner, game_name: GodotString) {
         let file = gdnative::api::File::new();
         let load_path = GodotString::from_str(format!("user://{}", game_name.to_lowercase()));
         match file.open(load_path.clone(), 1) {
@@ -150,5 +167,11 @@ impl Game {
     fn set_delta_resource(&mut self, delta: f64) {
         let mut del = self.resources.get_mut_or_default::<res::Delta>();
         &del.set(delta);
+    }
+
+    fn ecs_message_process(&self, _owner: &Owner, receiver: &Receiver<msg::ECSMessages>) {
+        while let Ok(message) = receiver.try_recv() {
+            match message {}
+        }
     }
 }

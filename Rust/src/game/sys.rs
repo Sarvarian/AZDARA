@@ -1,4 +1,7 @@
+use std::sync::mpsc::Sender;
+
 use super::com::*;
+use super::msg::*;
 use super::res::*;
 use legion::*;
 
@@ -11,10 +14,18 @@ pub fn make_world() -> World {
     world
 }
 
-pub fn make_resources(space: gdnative::core_types::Rid) -> Resources {
+pub fn make_resources(
+    space: gdnative::core_types::Rid,
+    process_message_sender: Sender<ECSMessages>,
+    physics_process_message_sender: Sender<ECSMessages>,
+) -> Resources {
     let mut res = Resources::default();
 
     res.insert(super::srm::GodotServerResourceManager::new());
+    res.insert(ProcessMessageSender::new(process_message_sender));
+    res.insert(PhysicsProcessMessageSender::new(
+        physics_process_message_sender,
+    ));
     res.insert(Input::new());
     res.insert(WorldSpace::new(space));
 

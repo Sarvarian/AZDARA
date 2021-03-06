@@ -24,7 +24,8 @@ func _exit_tree() -> void:
 	lib.free()
 
 
-func _input(event : InputEvent) -> void:
+func _unhandled_input(event : InputEvent) -> void:
+	lib.input(event)
 	if event.is_action_pressed("save_game"):
 		lib.save_game(GAME_NAME)
 	if event.is_action_pressed("load_game"):
