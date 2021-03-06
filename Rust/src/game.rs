@@ -85,6 +85,7 @@ impl Game {
                     godot_error!("Game Save {} Failed, Because {}", save_path, err);
                 }
                 Ok(_) => {
+                    godot_print!("{:?}", save);
                     file.store_buffer(TypedArray::from_vec(save));
                     godot_print!("Game Saved Successfully!")
                 }
@@ -112,6 +113,7 @@ impl Game {
                         vec
                     },
                 );
+                godot_print!("{:?}", load);
                 let entity_serializer = Canon::default();
                 let mut des =
                     bincode::Deserializer::from_slice(load.as_slice(), bincode::options());
