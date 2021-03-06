@@ -4,6 +4,7 @@ use serde::de::DeserializeSeed;
 
 mod com;
 mod res;
+mod srm;
 mod sys;
 
 type SerializeFilter = com::Player;
@@ -13,6 +14,7 @@ type SerializeFilter = com::Player;
 pub struct Game {
     world: legion::World,
     resources: legion::Resources,
+    ready_schedule: legion::Schedule,
     process_schedule: legion::Schedule,
     physics_process_schedule: legion::Schedule,
     registry: legion::Registry<String>,
@@ -27,6 +29,7 @@ impl Game {
         Game {
             world: sys::make_world(),
             resources: sys::make_resources(space),
+            ready_schedule: sys::make_ready_schedule(),
             process_schedule: sys::make_process_schedule(),
             physics_process_schedule: sys::make_physics_process_schedule(),
             registry: sys::make_registry(),
@@ -35,7 +38,10 @@ impl Game {
     }
 
     #[export]
-    fn ready(&mut self, _owner: &Object) {}
+    fn ready(&mut self, _owner: &Object) {
+        self.ready_schedule
+            .execute(&mut self.world, &mut self.resources);
+    }
 
     #[export]
     fn process(&mut self, _owner: &Object, delta: f64) {

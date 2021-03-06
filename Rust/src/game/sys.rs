@@ -14,10 +14,14 @@ pub fn make_world() -> World {
 pub fn make_resources(space: gdnative::core_types::Rid) -> Resources {
     let mut res = Resources::default();
 
-    res.insert(PhysicsServer::new());
+    res.insert(super::srm::GodotServerResourceManager::new());
     res.insert(WorldSpace::new(space));
 
     res
+}
+
+pub fn make_ready_schedule() -> Schedule {
+    Schedule::builder().add_system(test_system()).build()
 }
 
 pub fn make_process_schedule() -> Schedule {
