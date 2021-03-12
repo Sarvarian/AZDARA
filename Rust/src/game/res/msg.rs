@@ -1,10 +1,10 @@
 use super::super::msg::*;
 use std::sync::mpsc::Sender;
 
-pub struct ProcessMessageSender(Sender<ECSMessages>);
+pub struct ProcessMessageSender(Sender<FromECSMessages>);
 
 impl std::ops::Deref for ProcessMessageSender {
-    type Target = Sender<ECSMessages>;
+    type Target = Sender<FromECSMessages>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -12,15 +12,15 @@ impl std::ops::Deref for ProcessMessageSender {
 }
 
 impl ProcessMessageSender {
-    pub fn new(process_message_sender: Sender<ECSMessages>) -> Self {
+    pub fn new(process_message_sender: Sender<FromECSMessages>) -> Self {
         ProcessMessageSender(process_message_sender)
     }
 }
 
-pub struct PhysicsProcessMessageSender(Sender<ECSMessages>);
+pub struct PhysicsProcessMessageSender(Sender<FromECSMessages>);
 
 impl std::ops::Deref for PhysicsProcessMessageSender {
-    type Target = Sender<ECSMessages>;
+    type Target = Sender<FromECSMessages>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -28,7 +28,7 @@ impl std::ops::Deref for PhysicsProcessMessageSender {
 }
 
 impl PhysicsProcessMessageSender {
-    pub fn new(physics_process_message_sender: Sender<ECSMessages>) -> Self {
+    pub fn new(physics_process_message_sender: Sender<FromECSMessages>) -> Self {
         PhysicsProcessMessageSender(physics_process_message_sender)
     }
 }

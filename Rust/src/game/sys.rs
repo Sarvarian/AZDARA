@@ -16,8 +16,8 @@ pub fn make_world() -> World {
 
 pub fn make_resources(
     space: gdnative::core_types::Rid,
-    process_message_sender: Sender<ECSMessages>,
-    physics_process_message_sender: Sender<ECSMessages>,
+    process_message_sender: Sender<FromECSMessages>,
+    physics_process_message_sender: Sender<FromECSMessages>,
 ) -> Resources {
     let mut res = Resources::default();
 

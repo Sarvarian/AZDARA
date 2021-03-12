@@ -1,1 +1,1 @@
-pub enum ECSMessages {}
+pub enum FromECSMessages {}

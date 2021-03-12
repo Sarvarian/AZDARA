@@ -21,8 +21,8 @@ pub struct Game {
     ready_schedule: legion::Schedule,
     process_schedule: legion::Schedule,
     physics_process_schedule: legion::Schedule,
-    process_message_receiver: Receiver<msg::ECSMessages>,
-    physics_process_message_receiver: Receiver<msg::ECSMessages>,
+    process_message_receiver: Receiver<msg::FromECSMessages>,
+    physics_process_message_receiver: Receiver<msg::FromECSMessages>,
     registry: legion::Registry<String>,
     godot_world: Ref<gdnative::api::World, gdnative::thread_access::Shared>,
 }
@@ -58,7 +58,7 @@ impl Game {
         self.set_delta_resource(delta);
         self.process_schedule
             .execute(&mut self.world, &mut self.resources);
-        self.ecs_message_process(owner, &self.process_message_receiver)
+        self.from_ecs_message_process(owner, &self.process_message_receiver)
     }
 
     #[export]
@@ -66,7 +66,7 @@ impl Game {
         self.set_delta_resource(delta);
         self.physics_process_schedule
             .execute(&mut self.world, &mut self.resources);
-        self.ecs_message_process(owner, &self.physics_process_message_receiver)
+        self.from_ecs_message_process(owner, &self.physics_process_message_receiver)
     }
 
     #[export]
@@ -169,7 +169,7 @@ impl Game {
         &del.set(delta);
     }
 
-    fn ecs_message_process(&self, _owner: &Owner, receiver: &Receiver<msg::ECSMessages>) {
+    fn from_ecs_message_process(&self, _owner: &Owner, receiver: &Receiver<msg::FromECSMessages>) {
         while let Ok(message) = receiver.try_recv() {
             match message {}
         }
