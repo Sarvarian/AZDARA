@@ -13,3 +13,11 @@ impl std::ops::Deref for Player {
 
 #[derive(Serialize, Deserialize)]
 pub struct Position(gdnative::core_types::Vector3);
+
+impl std::ops::Deref for Position {
+    type Target = gdnative::core_types::Vector3;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
