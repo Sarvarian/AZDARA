@@ -8,28 +8,6 @@
 
 config_version=4
 
-_global_script_classes=[ {
-"base": "Object",
-"class": "Addresses",
-"language": "GDScript",
-"path": "res://aban/static_objects/addresses.gd"
-}, {
-"base": "Object",
-"class": "CallBackObject",
-"language": "GDScript",
-"path": "res://aban/game/callback_object.gd"
-}, {
-"base": "Node",
-"class": "Game",
-"language": "GDScript",
-"path": "res://aban/game/game.gd"
-} ]
-_global_script_class_icons={
-"Addresses": "",
-"CallBackObject": "",
-"Game": ""
-}
-
 [application]
 
 config/name="azdara"
