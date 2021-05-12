@@ -1,10 +1,9 @@
+use crate::gal;
 use gdnative::prelude::*;
-
 use legion::*;
 
 mod com;
 mod res;
-mod srm;
 mod sys;
 
 type Owner = Node;
@@ -16,23 +15,52 @@ pub struct Game {
     resources: legion::Resources,
     process_schedule: legion::Schedule,
     physics_process_schedule: legion::Schedule,
+    sprite: Option<gal::Sprite>,
 }
 
 #[methods]
 impl Game {
     fn new(_owner: &Owner) -> Self {
-        let world = gdnative::api::World2D::new();
-        let canvas = world.canvas();
         Game {
             world: make_world(),
-            resources: make_resources(canvas),
-            process_schedule: make_process_schedule(),
-            physics_process_schedule: make_physics_process_schedule(),
+            resources: make_resources(),
+            process_schedule: sys::make_process_schedule(),
+            physics_process_schedule: sys::make_physics_process_schedule(),
+            sprite: None,
         }
     }
 
     #[export]
-    fn _ready(&mut self, _owner: &Owner) {}
+    fn _ready(&mut self, owner: &Owner) {
+        if let Some(canvas) = if let Some(tree) = owner.get_tree() {
+            unsafe {
+                if let Some(root) = tree.assume_safe().root() {
+                    let root = root.assume_safe();
+                    root.set_usage(0);
+                    if let Some(world) = root.find_world_2d() {
+                        let canvas = world.assume_safe().canvas();
+                        Some(canvas)
+                    } else {
+                        godot_error!("Getting World2D on Game Ready Failed!");
+                        None
+                    }
+                } else {
+                    godot_error!("Getting Viewport on Game Ready Failed!");
+                    None
+                }
+            }
+        } else {
+            godot_error!("Getting Tree on Game Ready Failed!");
+            None
+        } {
+            match gal::make_sprite(GodotString::from_str("res://contents/icon.tres"), canvas) {
+                Ok(sprite) => self.sprite = Some(sprite),
+                Err(err) => godot_print!("Error on Game Ready make_sprite: {}", err),
+            }
+        } else {
+            godot_error!("Getting canvas on Game Ready Failed!");
+        }
+    }
 
     #[export]
     fn _process(&mut self, _owner: &Owner, delta: f64) {
@@ -63,19 +91,10 @@ pub fn make_world() -> World {
     world
 }
 
-pub fn make_resources(canvas: gdnative::core_types::Rid) -> Resources {
+pub fn make_resources() -> Resources {
     let mut res = Resources::default();
 
-    res.insert(srm::GodotServerResourceManager::new(canvas));
     res.insert(res::Input::new());
 
     res
-}
-
-pub fn make_process_schedule() -> Schedule {
-    Schedule::builder().add_system(sys::test_system()).build()
-}
-
-pub fn make_physics_process_schedule() -> Schedule {
-    Schedule::builder().add_system(sys::test_system()).build()
 }

@@ -1,5 +1,6 @@
 use gdnative::{godot_init, nativescript::InitHandle};
 
+mod gal;
 mod game;
 
 fn init(handle: InitHandle) {

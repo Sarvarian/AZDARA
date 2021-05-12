@@ -1,12 +1,12 @@
-use gdnative::{core_types::GodotString, godot_print};
 use legion::*;
+
+pub fn make_process_schedule() -> Schedule {
+    Schedule::builder().add_system(test_system()).build()
+}
+
+pub fn make_physics_process_schedule() -> Schedule {
+    Schedule::builder().add_system(test_system()).build()
+}
 
 #[system(for_each)]
 pub fn test(_entity: &Entity) {}
-
-#[system]
-pub fn make_sprite(#[resource] srm: &super::srm::GodotServerResourceManager) {
-    if let Err(err) = srm.make_sprite(GodotString::from_str("res://contents/icon.png")) {
-        godot_print!("Error on make_sprite: {}", err);
-    }
-}
