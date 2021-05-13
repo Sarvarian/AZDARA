@@ -1,10 +1,6 @@
-use crate::gal;
+use crate::{res, sys};
 use gdnative::prelude::*;
 use legion::*;
-
-mod com;
-mod res;
-mod sys;
 
 type Owner = Node;
 
@@ -15,7 +11,6 @@ pub struct Game {
     resources: legion::Resources,
     process_schedule: legion::Schedule,
     physics_process_schedule: legion::Schedule,
-    sprite: Option<gal::Sprite>,
 }
 
 #[methods]
@@ -26,40 +21,28 @@ impl Game {
             resources: make_resources(),
             process_schedule: sys::make_process_schedule(),
             physics_process_schedule: sys::make_physics_process_schedule(),
-            sprite: None,
         }
     }
 
     #[export]
     fn _ready(&mut self, owner: &Owner) {
-        if let Some(canvas) = if let Some(tree) = owner.get_tree() {
+        if let Some(tree) = owner.get_tree() {
             unsafe {
                 if let Some(root) = tree.assume_safe().root() {
                     let root = root.assume_safe();
                     root.set_usage(0);
                     if let Some(world) = root.find_world_2d() {
                         let canvas = world.assume_safe().canvas();
-                        Some(canvas)
+                        self.resources.insert(res::Canvas::new(canvas));
                     } else {
                         godot_error!("Getting World2D on Game Ready Failed!");
-                        None
                     }
                 } else {
                     godot_error!("Getting Viewport on Game Ready Failed!");
-                    None
                 }
             }
-        } else {
-            godot_error!("Getting Tree on Game Ready Failed!");
-            None
-        } {
-            match gal::make_sprite(GodotString::from_str("res://contents/icon.tres"), canvas) {
-                Ok(sprite) => self.sprite = Some(sprite),
-                Err(err) => godot_print!("Error on Game Ready make_sprite: {}", err),
-            }
-        } else {
-            godot_error!("Getting canvas on Game Ready Failed!");
         }
+        sys::make_ready_schedule().execute(&mut self.world, &mut self.resources);
     }
 
     #[export]
@@ -95,6 +78,8 @@ pub fn make_resources() -> Resources {
     let mut res = Resources::default();
 
     res.insert(res::Input::new());
+    res.insert(res::VisualServer::new());
+    res.insert(res::ResourceLoader::new());
 
     res
 }
