@@ -9,6 +9,7 @@ type Owner = Node;
 pub struct Game {
     world: legion::World,
     resources: legion::Resources,
+    ready_schedule: legion::Schedule,
     process_schedule: legion::Schedule,
     physics_process_schedule: legion::Schedule,
 }
@@ -16,11 +17,13 @@ pub struct Game {
 #[methods]
 impl Game {
     fn new(_owner: &Owner) -> Self {
+        let (ready, process, physics_process) = sys::make_schedules();
         Game {
             world: make_world(),
             resources: make_resources(),
-            process_schedule: sys::make_process_schedule(),
-            physics_process_schedule: sys::make_physics_process_schedule(),
+            ready_schedule: ready,
+            process_schedule: process,
+            physics_process_schedule: physics_process,
         }
     }
 
@@ -42,7 +45,8 @@ impl Game {
                 }
             }
         }
-        sys::make_ready_schedule().execute(&mut self.world, &mut self.resources);
+        self.ready_schedule
+            .execute(&mut self.world, &mut self.resources);
     }
 
     #[export]

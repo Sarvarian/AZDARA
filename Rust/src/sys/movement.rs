@@ -8,10 +8,12 @@ pub trait MovementSystems {
     fn add_movement_systems(&mut self) -> &mut Self;
 }
 
-impl MovementSystems for systems::Builder {
+impl MovementSystems for super::Builder3 {
     fn add_movement_systems(&mut self) -> &mut Self {
-        self.add_system(update_item_transform_system())
-            .add_system(resolve_input_move_dir_system())
+        self.physics_process
+            .add_system(update_item_transform_system())
+            .add_system(resolve_input_move_dir_system());
+        self
     }
 }
 

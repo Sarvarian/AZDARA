@@ -7,9 +7,10 @@ pub trait InputSystems {
     fn add_input_systems(&mut self) -> &mut Self;
 }
 
-impl InputSystems for systems::Builder {
+impl InputSystems for super::Builder3 {
     fn add_input_systems(&mut self) -> &mut Self {
-        self.add_system(player_movement_system())
+        self.physics_process.add_system(player_movement_system());
+        self
     }
 }
 
