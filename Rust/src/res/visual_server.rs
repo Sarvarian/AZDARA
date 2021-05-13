@@ -8,8 +8,8 @@ impl std::ops::Deref for VisualServer {
     }
 }
 
-impl VisualServer {
-    pub fn new() -> Self {
+impl std::default::Default for VisualServer {
+    fn default() -> Self {
         VisualServer()
     }
 }

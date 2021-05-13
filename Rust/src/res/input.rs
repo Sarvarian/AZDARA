@@ -8,8 +8,8 @@ impl std::ops::Deref for Input {
     }
 }
 
-impl Input {
-    pub fn new() -> Self {
+impl std::default::Default for Input {
+    fn default() -> Self {
         Input(gdnative::api::Input::godot_singleton())
     }
 }

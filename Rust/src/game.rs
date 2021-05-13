@@ -1,4 +1,4 @@
-use crate::{res, sys};
+use crate::{rapier::RapierPhysics, res, sys};
 use gdnative::prelude::*;
 use legion::*;
 
@@ -57,11 +57,12 @@ impl Game {
         self.set_delta_resource(delta);
         self.physics_process_schedule
             .execute(&mut self.world, &mut self.resources);
+        self.resources.get_mut_or_default::<RapierPhysics>().step();
     }
 
     fn set_delta_resource(&mut self, delta: f64) {
         let mut del = self.resources.get_mut_or_default::<res::Delta>();
-        &del.set(delta);
+        del.set(delta);
     }
 }
 
@@ -77,9 +78,10 @@ pub fn make_world() -> World {
 pub fn make_resources() -> Resources {
     let mut res = Resources::default();
 
-    res.insert(res::Input::new());
-    res.insert(res::VisualServer::new());
-    res.insert(res::ResourceLoader::new());
+    res.insert(res::Input::default());
+    res.insert(res::VisualServer::default());
+    res.insert(res::ResourceLoader::default());
+    res.insert(RapierPhysics::default());
 
     res
 }

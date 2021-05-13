@@ -23,9 +23,8 @@ pub struct RapierPhysics {
     intersection_recv: Receiver<IntersectionEvent>,
 }
 
-impl RapierPhysics {
-    pub fn new() -> Self {
-        // Initialize the event collector.
+impl std::default::Default for RapierPhysics {
+    fn default() -> Self {
         let (contact_send, contact_recv) = crossbeam::channel::unbounded();
         let (intersection_send, intersection_recv) = crossbeam::channel::unbounded();
         RapierPhysics {
@@ -44,8 +43,11 @@ impl RapierPhysics {
             intersection_recv,
         }
     }
+}
 
+impl RapierPhysics {
     pub fn step(&mut self) {
+        // self.integration_parameters.dt = delta;
         let physics_hooks = ();
         let event_handler = ();
         self.pipeline.step(
@@ -68,9 +70,5 @@ impl RapierPhysics {
         while let Ok(intersection_event) = self.intersection_recv.try_recv() {
             // Handle the intersection event.
         }
-    }
-
-    pub fn set_delta(&mut self, delta: Real) {
-        self.integration_parameters.dt = delta;
     }
 }

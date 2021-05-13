@@ -26,6 +26,6 @@ fn player_movement(
     let down = input.get_action_strength(format!("player{}_move_down", **player));
     let dir = Vector2::new((right - left) as f32, (down - up) as f32).clamp_length(0f32, 1f32);
     if dir.x.abs() > f32::EPSILON || dir.y.abs() > f32::EPSILON {
-        cmd.add_component(entity.clone(), com::InputMoveDir(dir));
+        cmd.add_component(entity.clone(), com::InputMoveDir::from(dir));
     }
 }

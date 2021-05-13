@@ -8,8 +8,8 @@ impl std::ops::Deref for ResourceLoader {
     }
 }
 
-impl ResourceLoader {
-    pub fn new() -> Self {
+impl std::default::Default for ResourceLoader {
+    fn default() -> Self {
         ResourceLoader(gdnative::api::ResourceLoader::godot_singleton())
     }
 }
