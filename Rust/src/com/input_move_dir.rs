@@ -21,9 +21,3 @@ impl std::convert::From<Vector2> for InputMoveDir {
         InputMoveDir(other)
     }
 }
-
-impl std::convert::From<InputMoveDir> for Vector2 {
-    fn from(other: InputMoveDir) -> Self {
-        other.0
-    }
-}
