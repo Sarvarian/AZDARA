@@ -11,5 +11,3 @@ crate-type = ["cdylib"]
 
 [dependencies]
 gdnative = "0.9.3"
-legion = "0.4.0"
-rapier2d = { version = "0.8.0", features = [ "simd-stable", "parallel" ] }
