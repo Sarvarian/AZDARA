@@ -1,7 +1,6 @@
 extends CanvasLayer
 
 
-const user_packages_directory : String = "user://packages/"
 const save_directory : String = "user://saves/"
 const save_extension : String = ".azsave"
 const save_card := preload("res://aban/game_select/save_card/save_card.tscn")
@@ -20,10 +19,6 @@ func _ready() -> void:
 	add_new_game_card()
 	
 	var err : int = 0
-	
-	if not directory.dir_exists(user_packages_directory):
-		err = directory.make_dir_recursive(user_packages_directory)
-	check_and_report_err(err)
 	
 	if not directory.dir_exists(save_directory):
 		err = directory.make_dir_recursive(save_directory)
