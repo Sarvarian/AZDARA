@@ -9,7 +9,7 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Resource",
+"base": "Reference",
 "class": "Game",
 "language": "GDScript",
 "path": "res://aban/game/game.gd"
