@@ -13,6 +13,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 focus_mode = 1
 __meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
@@ -23,6 +25,8 @@ anchor_bottom = 1.0
 margin_top = -14.0
 grow_vertical = 0
 __meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
@@ -32,6 +36,8 @@ anchor_top = 0.1
 anchor_right = 0.9
 anchor_bottom = 0.9
 __meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
@@ -41,6 +47,10 @@ margin_bottom = 480.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 3 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="Story" type="Label" parent="Margin/Panel"]
 anchor_left = 0.05
@@ -51,6 +61,8 @@ custom_fonts/font = ExtResource( 2 )
 text = "Story"
 valign = 1
 __meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
@@ -63,6 +75,8 @@ custom_fonts/font = ExtResource( 2 )
 text = "Free Play"
 valign = 1
 __meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
@@ -75,6 +89,8 @@ custom_fonts/font = ExtResource( 2 )
 text = "Creative"
 valign = 1
 __meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
@@ -85,6 +101,8 @@ anchor_right = 0.7
 anchor_bottom = 0.9
 script = ExtResource( 4 )
 __meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 

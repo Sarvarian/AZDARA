@@ -11,7 +11,6 @@ var saves : PoolStringArray = []
 var directory : Directory = Directory.new()
 
 
-onready var err_label : Label = $ErrLabel
 onready var container : GridContainer = $Margin/SavesContainer
 
 
@@ -22,13 +21,22 @@ func _ready() -> void:
 	
 	if not directory.dir_exists(save_directory):
 		err = directory.make_dir_recursive(save_directory)
-	check_and_report_err(err)
+		if err:
+			var msg := "Creating Save Directory Failed With Godot Error Code: " + String(err)
+			Log.error(msg)
+			push_error(msg)
 	
 	err = directory.open(save_directory)
-	check_and_report_err(err)
+	if err:
+		var msg = "Opening Save Directory Failed With Godot Error Code: " + String(err)
+		Log.error(msg)
+		push_error(msg)
 	
 	err = directory.list_dir_begin(true, false)
-	check_and_report_err(err)
+	if err:
+		var msg = "\"directory.list_dir_begin(true, false)\" for Save Directory Failed with Godot Error Code: " + String(err)
+		Log.error(msg)
+		push_error(msg)
 	
 	var name := directory.get_next()
 	while name != "":
@@ -38,12 +46,6 @@ func _ready() -> void:
 	directory.list_dir_end()
 	
 	make_save_cards()
-
-
-func check_and_report_err(err : int) -> void:
-	if not err:
-		return
-	err_label.text += "Godot Error code: {}\n".format([err], "{}")
 
 
 func add_to_saves(name : String) -> void:
