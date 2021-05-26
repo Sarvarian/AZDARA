@@ -1,0 +1,12 @@
+{
+    "player_limit": 4,
+    "package_dependencies": [
+        "test",
+        "azdara",
+        "someone_story"
+    ],
+    "worlds": [
+        "test_0",
+        "test_1"
+    ]
+}

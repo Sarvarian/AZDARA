@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://aban/world/game_world_base.gd" type="Script" id=1]
+[ext_resource path="res://aban/map/map_base.gd" type="Script" id=1]
 
 [sub_resource type="World" id=1]
 
-[node name="GameWorldBase" type="Viewport"]
+[node name="MapBase" type="Viewport"]
 size = Vector2( 1020, 600 )
 own_world = true
 world = SubResource( 1 )

@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "Game",
 "language": "GDScript",
 "path": "res://aban/game/game.gd"
+}, {
+"base": "Viewport",
+"class": "MapBase",
+"language": "GDScript",
+"path": "res://aban/map/map_base.gd"
 } ]
 _global_script_class_icons={
-"Game": ""
+"Game": "",
+"MapBase": ""
 }
 
 [application]
