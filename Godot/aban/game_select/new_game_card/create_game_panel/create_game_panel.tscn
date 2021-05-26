@@ -1,13 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://aban/game_select/new_game_card/create_game_panel/create_game_panel.gd" type="Script" id=1]
-[ext_resource path="res://aban/fonts/Open_Sans/OpenSans-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://aban/game_select/new_game_card/create_game_panel/create_game_panel_labels_font.tres" type="DynamicFont" id=2]
 [ext_resource path="res://aban/game_select/new_game_card/create_game_panel/panel.gd" type="Script" id=3]
 [ext_resource path="res://aban/game_select/new_game_card/create_game_panel/tree.gd" type="Script" id=4]
-
-[sub_resource type="DynamicFont" id=1]
-size = 32
-font_data = ExtResource( 2 )
 
 [node name="CanvasLayer" type="CanvasLayer"]
 script = ExtResource( 1 )
@@ -51,7 +47,7 @@ anchor_left = 0.05
 anchor_top = 0.05
 anchor_right = 0.3
 anchor_bottom = 0.15
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = ExtResource( 2 )
 text = "Story"
 valign = 1
 __meta__ = {
@@ -63,7 +59,7 @@ anchor_left = 0.75
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.7
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = ExtResource( 2 )
 text = "Free Play"
 valign = 1
 __meta__ = {
@@ -75,7 +71,7 @@ anchor_left = 0.75
 anchor_top = 0.7
 anchor_right = 1.0
 anchor_bottom = 0.9
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = ExtResource( 2 )
 text = "Creative"
 valign = 1
 __meta__ = {
