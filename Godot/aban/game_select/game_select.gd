@@ -3,8 +3,8 @@ extends CanvasLayer
 
 const save_directory : String = "user://saves/"
 const save_extension : String = ".azsave"
-const save_card := preload("res://game_select/save_card/save_card.tscn")
-const new_game_card := preload("res://game_select/new_game_card/new_game_card.tscn")
+const save_card := preload("res://aban/game_select/save_card/save_card.tscn")
+const new_game_card := preload("res://aban/game_select/new_game_card/new_game_card.tscn")
 
 
 var saves : PoolStringArray = []

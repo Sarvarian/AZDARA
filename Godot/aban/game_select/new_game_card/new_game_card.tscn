@@ -1,23 +1,17 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://game_select/game_select_font.tres" type="DynamicFont" id=1]
-[ext_resource path="res://game_select/save_card/save_card.gd" type="Script" id=2]
-[ext_resource path="res://game_select/save_card/norm_style.tres" type="StyleBox" id=3]
-[ext_resource path="res://game_select/save_card/panel.gd" type="Script" id=4]
+[ext_resource path="res://aban/game_select/game_select_font.tres" type="DynamicFont" id=1]
+[ext_resource path="res://aban/game_select/new_game_card/norm_style.tres" type="StyleBox" id=2]
+[ext_resource path="res://aban/game_select/new_game_card/new_game_card.gd" type="Script" id=3]
+[ext_resource path="res://aban/game_select/new_game_card/panel.gd" type="Script" id=4]
 
-[node name="SaveCard" type="Control"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -512.0
-margin_top = -300.0
-margin_right = 512.0
-margin_bottom = 300.0
+[node name="NewGame" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -40,37 +34,33 @@ __meta__ = {
 margin_right = 984.0
 margin_bottom = 560.0
 mouse_filter = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Panel" type="Panel" parent="Margin/AspectRatio"]
 margin_left = 212.0
 margin_right = 772.0
 margin_bottom = 560.0
 focus_mode = 2
-custom_styles/panel = ExtResource( 3 )
+custom_styles/panel = ExtResource( 2 )
 script = ExtResource( 4 )
 
-[node name="Name" type="Label" parent="Margin/AspectRatio/Panel"]
+[node name="Label" type="Label" parent="Margin/AspectRatio/Panel"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -280.0
-margin_top = -11.5
-margin_right = 280.0
-margin_bottom = 11.5
+margin_left = -41.0
+margin_top = -24.5
+margin_right = 41.0
+margin_bottom = 24.5
 custom_fonts/font = ExtResource( 1 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
-text = "Name"
+text = "+
+New Game"
 align = 1
-valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[connection signal="focus_entered" from="." to="." method="_on_SaveCard_focus_entered"]
 [connection signal="focus_entered" from="Margin/AspectRatio/Panel" to="Margin/AspectRatio/Panel" method="_on_Panel_focus_entered"]
 [connection signal="focus_exited" from="Margin/AspectRatio/Panel" to="Margin/AspectRatio/Panel" method="_on_Panel_focus_exited"]
 [connection signal="mouse_entered" from="Margin/AspectRatio/Panel" to="." method="_on_Panel_mouse_entered"]
