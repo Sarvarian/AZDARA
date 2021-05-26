@@ -8,14 +8,21 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Resource",
+"class": "Game",
+"language": "GDScript",
+"path": "res://aban/game/game.gd"
+} ]
+_global_script_class_icons={
+"Game": ""
+}
+
 [application]
 
 config/name="azdara"
 run/main_scene="res://aban/main/main.tscn"
-
-[debug]
-
-settings/stdout/verbose_stdout=true
+config/icon="res://aban/icons/icon.png"
 
 [editor_plugins]
 

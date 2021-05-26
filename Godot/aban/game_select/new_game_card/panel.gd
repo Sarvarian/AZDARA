@@ -16,3 +16,12 @@ func _on_Panel_focus_entered() -> void:
 func _on_Panel_focus_exited() -> void:
 	set("custom_styles/panel", norm_style)
 	label.set("custom_colors/font_color", Color.white)
+
+
+func _on_Panel_gui_input(event : InputEvent) -> void:
+	if event.is_action_released("ui_accept"):
+		$CreateGame.pop()
+	elif event is InputEventMouseButton:
+		if event.button_index == 1:
+			if event.is_pressed():
+				$CreateGame.pop()

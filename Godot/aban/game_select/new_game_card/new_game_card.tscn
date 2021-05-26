@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://aban/game_select/game_select_font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://aban/game_select/new_game_card/norm_style.tres" type="StyleBox" id=2]
 [ext_resource path="res://aban/game_select/new_game_card/new_game_card.gd" type="Script" id=3]
 [ext_resource path="res://aban/game_select/new_game_card/panel.gd" type="Script" id=4]
+[ext_resource path="res://aban/game_select/new_game_card/create_game_panel/create_game_panel.tscn" type="PackedScene" id=5]
 
 [node name="NewGame" type="Control"]
 anchor_right = 1.0
@@ -61,7 +62,10 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="CreateGame" parent="Margin/AspectRatio/Panel" instance=ExtResource( 5 )]
+
 [connection signal="focus_entered" from="Margin/AspectRatio/Panel" to="Margin/AspectRatio/Panel" method="_on_Panel_focus_entered"]
 [connection signal="focus_exited" from="Margin/AspectRatio/Panel" to="Margin/AspectRatio/Panel" method="_on_Panel_focus_exited"]
+[connection signal="gui_input" from="Margin/AspectRatio/Panel" to="Margin/AspectRatio/Panel" method="_on_Panel_gui_input"]
 [connection signal="mouse_entered" from="Margin/AspectRatio/Panel" to="." method="_on_Panel_mouse_entered"]
 [connection signal="mouse_exited" from="Margin/AspectRatio/Panel" to="." method="_on_Panel_mouse_exited"]

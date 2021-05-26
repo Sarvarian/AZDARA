@@ -4,20 +4,21 @@ type Owner = Object;
 
 #[derive(NativeClass)]
 #[inherit(Owner)]
-pub struct Game {}
+pub struct Game {
+    name: GodotString,
+}
 
 #[methods]
 impl Game {
     fn new(_owner: &Owner) -> Self {
-        Game {}
+        Game {
+            name: GodotString::from_str("Error name dosnt initialize"),
+        }
     }
 
     #[export]
-    fn _ready(&mut self, _owner: &Owner) {}
-
-    #[export]
-    fn _process(&mut self, _owner: &Owner, _delta: f64) {}
-
-    #[export]
-    fn _physics_process(&mut self, _owner: &Owner, _delta: f64) {}
+    fn _init(&mut self, _owner: &Owner, name: GodotString) {
+        godot_print!("Hello from godot! {}", name);
+        self.name = name;
+    }
 }
