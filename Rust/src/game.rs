@@ -1,6 +1,6 @@
 use gdnative::prelude::*;
 
-type Owner = Node;
+type Owner = Object;
 
 #[derive(NativeClass)]
 #[inherit(Owner)]

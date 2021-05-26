@@ -1,0 +1,19 @@
+extends Panel
+
+
+const norm_style : StyleBoxFlat = preload("res://game_select/save_card/norm_style.tres")
+const hover_style : StyleBoxFlat = preload("res://game_select/save_card/hover_style.tres")
+
+
+onready var label : Label = $Name
+
+
+func _on_Panel_focus_entered() -> void:
+	set("custom_styles/panel", hover_style)
+	label.set("custom_colors/font_color", Color.red)
+
+
+func _on_Panel_focus_exited() -> void:
+	set("custom_styles/panel", norm_style)
+	label.set("custom_colors/font_color", Color.white)
+
