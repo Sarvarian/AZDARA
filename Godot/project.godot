@@ -32,8 +32,8 @@ config/icon="res://aban/icons/icon.png"
 
 [autoload]
 
-Log="*res://aban/log/log.tscn"
 Console="*res://aban/console/console.tscn"
+Log="*res://aban/log/log.tscn"
 
 [editor_plugins]
 

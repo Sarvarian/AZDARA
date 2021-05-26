@@ -15,7 +15,7 @@ pub struct Game {
 impl Game {
     fn new(_owner: &Owner) -> Self {
         Game {
-            name: GodotString::from_str("Error name dosnt initialize"),
+            name: GodotString::from_str("Error Game Name Never Initialized"),
             _save_data: save_data::SaveData::default(),
         }
     }
