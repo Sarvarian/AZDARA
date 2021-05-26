@@ -22,6 +22,7 @@ func open() -> void:
 	visible = true
 	$Input.grab_focus()
 
+
 func close() -> void:
 	visible = false
 	release_focus()

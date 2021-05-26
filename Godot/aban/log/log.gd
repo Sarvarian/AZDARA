@@ -1,12 +1,6 @@
 extends Node
 
 
-func _ready() -> void:
-	error("Hello!")
-	warning("Hello!")
-	info("Hello!")
-
-
 func error(text : String) -> void:
 	var msg := _format_log_get("Error: " + text)
 	printerr(msg)
@@ -27,22 +21,11 @@ func warning(text : String) -> void:
 
 
 func _format_log_get(text : String) -> String:
-	var datetime := OS.get_datetime()
-	var datetime_text := "[{}-{}-{} {}:{}:{}]".format(
-		[
-			datetime.year,
-			datetime.month,
-			datetime.day,
-			datetime.hour,
-			datetime.minute,
-			datetime.second,
-		], "{}")
-	
-	
-	var final_text : String = "{} {}".format([
-		datetime_text,
+	var datetime : String = $Rust.get_current_datetime()
+	var msg : String = "{} {}".format([
+		datetime,
 		text
 	], "{}")
 	
-	$Rust.log_without_time(final_text)
-	return final_text
+	$Rust.log_without_time(msg)
+	return msg

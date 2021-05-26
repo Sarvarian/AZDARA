@@ -36,9 +36,9 @@ impl Log {
     }
 
     #[export]
-    fn log_with_time(&mut self, _owner: &Owner, text: GodotString) {
+    fn log_with_time(&mut self, owner: &Owner, text: GodotString) {
         self.log_file.seek_end(0);
-        let text = format!("{} {}\n", get_current_datetime(), text);
+        let text = format!("{} {}\n", self.get_current_datetime(owner), text);
         self.log_file.store_string(text);
     }
 
@@ -48,24 +48,25 @@ impl Log {
         let text = format!("{}\n", text);
         self.log_file.store_string(text);
     }
-}
 
-fn get_current_datetime() -> GodotString {
-    let os = gdnative::api::OS::godot_singleton();
-    let datetime = os.get_datetime(false);
-    let datetime = (
-        datetime.get("year").to_string(),
-        datetime.get("month").to_string(),
-        datetime.get("day").to_string(),
-        datetime.get("hour").to_string(),
-        datetime.get("minute").to_string(),
-        datetime.get("second").to_string(),
-    );
+    #[export]
+    fn get_current_datetime(&self, _owner: &Owner) -> GodotString {
+        let os = gdnative::api::OS::godot_singleton();
+        let datetime = os.get_datetime(false);
+        let datetime = (
+            datetime.get("year").to_string(),
+            datetime.get("month").to_string(),
+            datetime.get("day").to_string(),
+            datetime.get("hour").to_string(),
+            datetime.get("minute").to_string(),
+            datetime.get("second").to_string(),
+        );
 
-    let datetime = format!(
-        "[{}-{}-{} {}:{}:{}]",
-        datetime.0, datetime.1, datetime.2, datetime.3, datetime.4, datetime.5
-    );
+        let datetime = format!(
+            "[{}-{}-{} {}:{}:{}]",
+            datetime.0, datetime.1, datetime.2, datetime.3, datetime.4, datetime.5
+        );
 
-    GodotString::from(datetime)
+        GodotString::from(datetime)
+    }
 }

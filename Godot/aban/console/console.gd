@@ -5,6 +5,10 @@ func _ready() -> void:
 	put_white("Welcome to AZDARA")
 
 
+var time : float = 10
+var count : int = 0
+
+
 func put_white(text : String) -> void:
 	put(text, Color.white)
 
@@ -24,6 +28,16 @@ func put(text : String, color : Color) -> void:
 	$Control/Wall.pop()
 
 
-func alert(_text : String) -> void:
-	pass
+func red_alert(text : String) -> void:
+	put_red(text)
+	$Alert.alert(text, Color.red)
 
+
+func yellow_alert(text : String) -> void:
+	put_yellow(text)
+	$Alert.alert(text, Color.yellow)
+
+
+func white_alert(text : String) -> void:
+	put_white(text)
+	$Alert.alert(text, Color.white)

@@ -64,6 +64,7 @@ console={
 
 [physics]
 
+common/physics_fps=10
 2d/thread_model=2
 
 [rendering]
