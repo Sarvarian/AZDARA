@@ -1,10 +1,12 @@
 extends Control
 
 
+
 onready var panel : Panel = $Margin/AspectRatio/Panel
 
 
-func set_name(name : String) -> void:
+func set_name(save_name : String) -> void:
+	name = save_name
 	$Margin/AspectRatio/Panel/Name.text = name
 
 

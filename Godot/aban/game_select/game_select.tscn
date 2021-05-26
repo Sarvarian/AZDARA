@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://aban/game_select/game_select.gd" type="Script" id=1]
+[ext_resource path="res://aban/game_select/new_game_card/new_game_card.tscn" type="PackedScene" id=2]
 
 [node name="GameSelect" type="CanvasLayer"]
 script = ExtResource( 1 )
@@ -30,3 +31,9 @@ __meta__ = {
 "_edit_lock_": true,
 "_edit_use_anchors_": false
 }
+
+[node name="NewGame" parent="Margin/SavesContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 308.0
+margin_bottom = 500.0

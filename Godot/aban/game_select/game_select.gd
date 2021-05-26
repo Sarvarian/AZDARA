@@ -15,8 +15,6 @@ onready var container : GridContainer = $Margin/SavesContainer
 
 
 func _ready() -> void:
-	add_new_game_card()
-	
 	var err : int = 0
 	
 	if not directory.dir_exists(save_directory):
@@ -38,35 +36,28 @@ func _ready() -> void:
 		Log.error(msg)
 		push_error(msg)
 	
-	var name := directory.get_next()
-	while name != "":
-		add_to_saves(name)
-		name = directory.get_next()
+	var save_name := directory.get_next()
+	while save_name != "":
+		add_to_saves(save_name)
+		save_name = directory.get_next()
 	
 	directory.list_dir_end()
 	
 	make_save_cards()
 
 
-func add_to_saves(name : String) -> void:
+func add_to_saves(save_name : String) -> void:
 	if directory.current_is_dir():
 		return
-	if name.ends_with(save_extension):
-		name.erase(name.length() - save_extension.length(), save_extension.length())
-		saves.push_back(name)
+	if save_name.ends_with(save_extension):
+		save_name.erase(save_name.length() - save_extension.length(), save_extension.length())
+		saves.push_back(save_name)
 
 
 func make_save_cards() -> void:
-	for name in saves:
+	for save_name in saves:
 		var card := save_card.instance()
-		card.set_name(name)
+		card.set_name(save_name)
 		container.add_child(card)
-
-
-func add_new_game_card() -> void:
-	var card := new_game_card.instance()
-	container.add_child(card)
-
-
 
 
