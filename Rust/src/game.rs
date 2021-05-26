@@ -1,3 +1,5 @@
+mod save_data;
+
 use gdnative::prelude::*;
 
 type Owner = Object;
@@ -6,6 +8,7 @@ type Owner = Object;
 #[inherit(Owner)]
 pub struct Game {
     name: GodotString,
+    _save_data: save_data::SaveData,
 }
 
 #[methods]
@@ -13,6 +16,7 @@ impl Game {
     fn new(_owner: &Owner) -> Self {
         Game {
             name: GodotString::from_str("Error name dosnt initialize"),
+            _save_data: save_data::SaveData::default(),
         }
     }
 
