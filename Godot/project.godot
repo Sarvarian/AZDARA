@@ -30,6 +30,11 @@ config/name="azdara"
 run/main_scene="res://aban/main/main.tscn"
 config/icon="res://aban/icons/icon.png"
 
+[autoload]
+
+Log="*res://aban/log/log.tscn"
+Console="*res://aban/console/console.tscn"
+
 [editor_plugins]
 
 enabled=PoolStringArray( "res://addons/smoothing/plugin.cfg" )

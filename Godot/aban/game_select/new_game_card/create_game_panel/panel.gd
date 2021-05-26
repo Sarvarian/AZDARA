@@ -5,7 +5,8 @@ const res_packages_directory : String = "res://packages/"
 const user_packages_directory : String = "user://packages/"
 
 
-var packages : PoolStringArray = []
+var user_packages : PoolStringArray = []
+var res_packages : PoolStringArray = []
 var directory : Directory = Directory.new()
 
 
@@ -19,12 +20,16 @@ func _ready() -> void:
 		err = directory.make_dir_recursive(user_packages_directory)
 	check_and_report_err(err)
 	
-	check_dir_for_packages(res_packages_directory)
-	check_dir_for_packages(user_packages_directory)
+	res_packages = check_dir_for_packages(res_packages_directory)
+	user_packages = check_dir_for_packages(user_packages_directory)
+	
+	$Tree.set_packages(res_packages)
+	$Tree.set_packages(user_packages)
 
 
-func check_dir_for_packages(dir : String) -> void:
+func check_dir_for_packages(dir : String) -> PoolStringArray:
 	var err : int = 0
+	var packages : PoolStringArray = []
 	
 	err = directory.open(dir)
 	check_and_report_err(err)
@@ -34,11 +39,13 @@ func check_dir_for_packages(dir : String) -> void:
 	
 	var name := directory.get_next()
 	while name != "":
-		add_to_packages(name)
+		if directory.current_is_dir():
+			packages.push_back(name)
 		name = directory.get_next()
 	
 	directory.list_dir_end()
 	
+	return packages
 
 
 func check_and_report_err(err : int) -> void:
@@ -46,10 +53,6 @@ func check_and_report_err(err : int) -> void:
 		return
 	err_label.text += "Godot Error code: {}\n".format([err], "{}")
 
-
-func add_to_packages(name : String) -> void:
-	if directory.current_is_dir():
-		packages.push_back(name)
 
 
 
