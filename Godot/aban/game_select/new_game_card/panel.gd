@@ -3,18 +3,24 @@ extends Panel
 
 const norm_style : StyleBoxFlat = preload("res://aban/game_select/new_game_card/assets/norm_style.tres")
 const hover_style : StyleBoxFlat = preload("res://aban/game_select/new_game_card/assets/hover_style.tres")
-
-
-onready var label : Label = $Label
+const siganl_callback : Array = [
+	["mouse_entered", "_on_Panel_mouse_entered"],
+	["mouse_exited", "_on_Panel_mouse_exited"],
+	["focus_entered", "_on_Panel_focus_entered"],
+	["focus_exited", "_on_Panel_focus_exited"],
+	["gui_input", "_on_Panel_gui_input"]
+]
 
 
 func _ready() -> void:
-	var err : int = 0 # TODO Handle Errors
-	connect("mouse_entered", self, "_on_Panel_mouse_entered", [], CONNECT_DEFERRED)
-	connect("mouse_exited", self, "_on_Panel_mouse_exited", [], CONNECT_DEFERRED)
-	connect("focus_entered", self, "_on_Panel_focus_entered", [], CONNECT_DEFERRED)
-	connect("focus_exited", self, "_on_Panel_focus_exited", [], CONNECT_DEFERRED)
-	connect("gui_input", self, "_on_Panel_gui_input", [], CONNECT_DEFERRED)
+	for s in siganl_callback:
+		var name : String = s[0]
+		var callback : String = s[1]
+		var err : int = connect(name, self, callback, [], CONNECT_DEFERRED)
+		if err:
+			var msg = signal_connection_err_msg(name, err)
+			Log.error(msg)
+			push_error(msg)
 
 
 func _on_Panel_mouse_entered() -> void:
@@ -27,12 +33,12 @@ func _on_Panel_mouse_exited() -> void:
 
 func _on_Panel_focus_entered() -> void:
 	set("custom_styles/panel", hover_style)
-	label.set("custom_colors/font_color", Color.red)
+	$Label.set("custom_colors/font_color", Color.red)
 
 
 func _on_Panel_focus_exited() -> void:
 	set("custom_styles/panel", norm_style)
-	label.set("custom_colors/font_color", Color.white)
+	$Label.set("custom_colors/font_color", Color.white)
 
 
 func _on_Panel_gui_input(event : InputEvent) -> void:
@@ -42,3 +48,7 @@ func _on_Panel_gui_input(event : InputEvent) -> void:
 		if event.button_index == 1:
 			if event.is_pressed():
 				$CreateGame.pop()
+
+
+func signal_connection_err_msg(signal_name : String, error_code : int) -> String:
+	return "New Game Card Panel failed to connect " + signal_name + " signal. Godot Error Code : " + String(error_code)
