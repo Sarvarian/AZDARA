@@ -16,7 +16,9 @@ func _ready() -> void:
 	if not directory.dir_exists(user_packages_directory):
 		err = directory.make_dir_recursive(user_packages_directory)
 		if err:
-			Log.error("Creating User Packages Directory Failed With Godot Error Code: " + String(err))
+			var msg : String = "Creating User Packages Directory Failed With Godot Error Code: " + String(err)
+			Log.error(msg)
+			push_error(msg)
 	
 	res_packages = check_dir_for_packages(res_packages_directory)
 	user_packages = check_dir_for_packages(user_packages_directory)
@@ -31,11 +33,15 @@ func check_dir_for_packages(dir : String) -> PoolStringArray:
 	
 	err = directory.open(dir)
 	if err:
-		Log.error("Opennig Directory '" + dir + "' Failed With Godot Error Code: " + String(err))
+		var msg : String = "Opennig Directory '" + dir + "' Failed With Godot Error Code: " + String(err)
+		Log.error(msg)
+		push_error(msg)
 	
 	err = directory.list_dir_begin(true, false)
 	if err:
-		Log.error("'" + dir + "'.list_dir_begin(true, false) Failed With Godot Error Code: " + String(err))
+		var msg : String = "'" + dir + "'.list_dir_begin(true, false) Failed With Godot Error Code: " + String(err)
+		Log.error(msg)
+		push_error(msg)
 	
 	var name := directory.get_next()
 	while name != "":
