@@ -13,6 +13,7 @@ func _ready() -> void:
 	check_directories_for_packages()
 	print(packages)
 
+
 func  check_directories_for_packages() -> void:
 	var err : int = 0
 	var directory : Directory = Directory.new()
