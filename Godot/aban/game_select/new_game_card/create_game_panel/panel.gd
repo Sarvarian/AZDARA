@@ -1,8 +1,8 @@
 extends Panel
 
 
-const res_packages_directory : String = "rses://packages/"
-const user_packages_directory : String = "usser://packages/"
+const res_packages_directory : String = "res://packages/"
+const user_packages_directory : String = "user://packages/"
 
 
 var user_packages : PoolStringArray = []
