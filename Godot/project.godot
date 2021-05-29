@@ -33,6 +33,7 @@ config/icon="res://aban/icons/icon.png"
 [autoload]
 
 Log="*res://aban/log/log.tscn"
+PackageManager="*res://aban/package_manager/package_manager.tscn"
 
 [editor_plugins]
 
