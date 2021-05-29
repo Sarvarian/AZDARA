@@ -36,7 +36,7 @@ Log="*res://aban/log/log.tscn"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/smoothing/plugin.cfg" )
+enabled=PoolStringArray(  )
 
 [input]
 

@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends GridContainer
 
 
 const save_directory : String = "user://saves/"
@@ -9,9 +9,6 @@ const new_game_card := preload("res://aban/game_select/new_game_card/new_game_ca
 
 var saves : PoolStringArray = []
 var directory : Directory = Directory.new()
-
-
-onready var container : GridContainer = $Margin/SavesContainer
 
 
 func _ready() -> void:
@@ -58,6 +55,6 @@ func make_save_cards() -> void:
 	for save_name in saves:
 		var card := save_card.instance()
 		card.set_name(save_name)
-		container.add_child(card)
+		add_child(card)
 
 
