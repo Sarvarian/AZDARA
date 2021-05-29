@@ -1,10 +1,8 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://aban/check_azdara_lib/check_azdara_lib.gd" type="Script" id=1]
+[ext_resource path="res://aban/log/check_azdara_lib/check_azdara_lib.gd" type="Script" id=1]
 
 [node name="Check_AZDARA_Lib" type="CanvasLayer"]
-
-[node name="Script" type="Node" parent="."]
 script = ExtResource( 1 )
 
 [node name="AcceptDialog" type="AcceptDialog" parent="."]
@@ -13,5 +11,3 @@ margin_bottom = 58.0
 popup_exclusive = true
 dialog_text = "azdara lib dosnt find!"
 dialog_hide_on_ok = false
-
-[connection signal="confirmed" from="AcceptDialog" to="Script" method="_on_AcceptDialog_confirmed"]

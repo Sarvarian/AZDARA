@@ -1,12 +1,12 @@
 extends Node
 
 
-onready var dialog : AcceptDialog = $"../AcceptDialog"
+signal azdara_doesnt_find(name)
 
 
 func _ready() -> void:
-	dialog.get_close_button().hide()
-	dialog.dialog_text = azdara_file_name() + " doesn't find!"
+	$AcceptDialog.get_close_button().hide()
+	$AcceptDialog.dialog_text = azdara_file_name() + " doesn't find!"
 	
 	print("--- Start checking for AZDARA lib")
 	
@@ -14,11 +14,12 @@ func _ready() -> void:
 	var res := check_res_for_azdara()
 	
 	if not exe and not res:
-		dialog.popup_centered()
+		$AcceptDialog.popup_centered()
 		printerr("Founding AZDARA Lib Failed")
 		push_error("Founding AZDARA Lib Failed")
+		emit_signal("azdara_doesnt_find", azdara_file_name())
 	else:
-		get_parent().queue_free()
+		queue_free()
 	
 	print("--- End checking for AZDARA lib")
 
@@ -54,9 +55,6 @@ func azdara_file_name() -> String:
 			name = name + ".dll"
 	
 	return name
-
-
-
 
 
 

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://aban/log/log.gd" type="Script" id=1]
 [ext_resource path="res://aban/lib/log.gdns" type="Script" id=2]
 [ext_resource path="res://aban/log/console/console.tscn" type="PackedScene" id=3]
+[ext_resource path="res://aban/log/check_azdara_lib/check_azdara_lib.tscn" type="PackedScene" id=4]
 
 [node name="Log" type="Node"]
 script = ExtResource( 1 )
@@ -11,5 +12,9 @@ script = ExtResource( 1 )
 script = ExtResource( 2 )
 
 [node name="Console" parent="." instance=ExtResource( 3 )]
+
+[node name="Check_AZDARA_Lib" parent="." instance=ExtResource( 4 )]
+
+[connection signal="azdara_doesnt_find" from="Check_AZDARA_Lib" to="Console" method="_on_Check_AZDARA_Lib_azdara_doesnt_find"]
 
 [editable path="Console"]
