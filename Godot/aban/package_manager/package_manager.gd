@@ -8,6 +8,7 @@ const packages_directories : Array = [
 
 var packages : Dictionary = {}
 var directory : Directory = Directory.new()
+var file : File = File.new()
 
 
 func _ready() -> void:
@@ -55,11 +56,29 @@ func  check_directories_for_packages() -> void:
 
 
 func has_scenario(package_name : String) -> bool:
+	# TODO Handel Errors Here
+	directory.open(packages[package_name] as String)
+	return directory.file_exists("scenario.json")
+
+
+func get_scenario(package_name : String):
+	# TODO Handel Errors Here
 	
+	var path : String = packages[package_name] + "/scenario.json"
+	var err := file.open(path, _File.READ)
 	
-	return false
-
-
-
+	if err:
+		file.close()
+		return null
+	
+	var res := JSON.parse(file.get_as_text())
+	file.close()
+	
+	if res.error:
+		return null
+	
+	var dic : Dictionary = res.result()
+	
+	return dic
 
 
