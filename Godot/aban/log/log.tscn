@@ -13,8 +13,5 @@ script = ExtResource( 2 )
 
 [node name="Console" parent="." instance=ExtResource( 3 )]
 
-[node name="Check_AZDARA_Lib" parent="." instance=ExtResource( 4 )]
-
-[connection signal="azdara_doesnt_find" from="Check_AZDARA_Lib" to="Console" method="_on_Check_AZDARA_Lib_azdara_doesnt_find"]
-
-[editable path="Console"]
+[node name="AZDARA_PopError" parent="Console" instance=ExtResource( 4 )]
+margin_right = 149.0

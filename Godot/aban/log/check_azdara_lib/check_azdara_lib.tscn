@@ -2,12 +2,10 @@
 
 [ext_resource path="res://aban/log/check_azdara_lib/check_azdara_lib.gd" type="Script" id=1]
 
-[node name="Check_AZDARA_Lib" type="CanvasLayer"]
-script = ExtResource( 1 )
-
-[node name="AcceptDialog" type="AcceptDialog" parent="."]
+[node name="AZDARA_PopError" type="AcceptDialog"]
 margin_right = 83.0
 margin_bottom = 58.0
 popup_exclusive = true
 dialog_text = "azdara lib dosnt find!"
 dialog_hide_on_ok = false
+script = ExtResource( 1 )

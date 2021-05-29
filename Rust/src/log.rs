@@ -54,4 +54,9 @@ impl Log {
         let datetime = chrono::Local::now().to_string();
         GodotString::from(datetime)
     }
+
+    #[export]
+    fn check(&self, _owner: &Owner) -> bool {
+        true
+    }
 }
