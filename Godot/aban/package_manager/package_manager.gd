@@ -7,6 +7,7 @@ const packages_directories : Array = [
 ]
 
 var packages : Dictionary = {}
+var directory : Directory = Directory.new()
 
 
 func _ready() -> void:
@@ -16,7 +17,6 @@ func _ready() -> void:
 
 func  check_directories_for_packages() -> void:
 	var err : int = 0
-	var directory : Directory = Directory.new()
 	
 	for dir in packages_directories:
 		
@@ -53,6 +53,11 @@ func  check_directories_for_packages() -> void:
 
 
 
+
+func has_scenario(package_name : String) -> bool:
+	
+	
+	return false
 
 
 
