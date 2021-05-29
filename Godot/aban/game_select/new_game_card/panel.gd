@@ -1,11 +1,19 @@
 extends Panel
 
 
-const norm_style : StyleBoxFlat = preload("res://aban/game_select/new_game_card/norm_style.tres")
-const hover_style : StyleBoxFlat = preload("res://aban/game_select/new_game_card/hover_style.tres")
+const norm_style : StyleBoxFlat = preload("res://aban/game_select/new_game_card/assets/norm_style.tres")
+const hover_style : StyleBoxFlat = preload("res://aban/game_select/new_game_card/assets/hover_style.tres")
 
 
 onready var label : Label = $Label
+
+
+func _on_Panel_mouse_entered() -> void:
+	grab_focus()
+
+
+func _on_Panel_mouse_exited() -> void:
+	release_focus()
 
 
 func _on_Panel_focus_entered() -> void:

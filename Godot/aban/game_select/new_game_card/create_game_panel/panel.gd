@@ -1,16 +1,13 @@
 extends Panel
 
 
-const res_packages_directory : String = "res://packages/"
-const user_packages_directory : String = "user://packages/"
+const res_packages_directory : String = "rses://packages/"
+const user_packages_directory : String = "usser://packages/"
 
 
 var user_packages : PoolStringArray = []
 var res_packages : PoolStringArray = []
 var directory : Directory = Directory.new()
-
-
-onready var err_label : Label = $"../../Control/ErrLabel"
 
 
 func _ready() -> void:
