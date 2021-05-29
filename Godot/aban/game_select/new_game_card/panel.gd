@@ -8,6 +8,15 @@ const hover_style : StyleBoxFlat = preload("res://aban/game_select/new_game_card
 onready var label : Label = $Label
 
 
+func _ready() -> void:
+	var err : int = 0 # TODO Handle Errors
+	connect("mouse_entered", self, "_on_Panel_mouse_entered", [], CONNECT_DEFERRED)
+	connect("mouse_exited", self, "_on_Panel_mouse_exited", [], CONNECT_DEFERRED)
+	connect("focus_entered", self, "_on_Panel_focus_entered", [], CONNECT_DEFERRED)
+	connect("focus_exited", self, "_on_Panel_focus_exited", [], CONNECT_DEFERRED)
+	connect("gui_input", self, "_on_Panel_gui_input", [], CONNECT_DEFERRED)
+
+
 func _on_Panel_mouse_entered() -> void:
 	grab_focus()
 

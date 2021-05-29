@@ -75,9 +75,3 @@ __meta__ = {
 }
 
 [node name="CreateGame" parent="Margin/AspectRatio/Panel" instance=ExtResource( 5 )]
-
-[connection signal="focus_entered" from="Margin/AspectRatio/Panel" to="Margin/AspectRatio/Panel" method="_on_Panel_focus_entered"]
-[connection signal="focus_exited" from="Margin/AspectRatio/Panel" to="Margin/AspectRatio/Panel" method="_on_Panel_focus_exited"]
-[connection signal="gui_input" from="Margin/AspectRatio/Panel" to="Margin/AspectRatio/Panel" method="_on_Panel_gui_input"]
-[connection signal="mouse_entered" from="Margin/AspectRatio/Panel" to="Margin/AspectRatio/Panel" method="_on_Panel_mouse_entered"]
-[connection signal="mouse_exited" from="Margin/AspectRatio/Panel" to="Margin/AspectRatio/Panel" method="_on_Panel_mouse_exited"]
