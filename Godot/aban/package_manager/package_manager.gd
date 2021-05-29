@@ -30,7 +30,7 @@ func  check_directories_for_packages() -> void:
 		# Open directory
 		err = directory.open(dir)
 		if err:
-			var msg : String = "Opennig Directory '" + dir + "' Failed With Godot Error Code: " + String(err)
+			var msg : String = "Opening Directory '" + dir + "' Failed With Godot Error Code: " + String(err)
 			Log.error(msg)
 			push_error(msg)
 		
