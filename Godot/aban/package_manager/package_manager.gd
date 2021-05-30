@@ -6,14 +6,20 @@ const packages_directories : Array = [
 	"res://packages/"
 ]
 
+
 var packages : Dictionary = {}
 var directory : Directory = Directory.new()
 var file : File = File.new()
+var rust := preload("res://aban/lib/package_manager.gdns").new()
 
 
 func _ready() -> void:
 	check_directories_for_packages()
 	print(packages)
+
+
+func _exit_tree() -> void:
+	pass
 
 
 func  check_directories_for_packages() -> void:
@@ -54,31 +60,33 @@ func  check_directories_for_packages() -> void:
 
 
 
-
-func has_scenario(package_name : String) -> bool:
-	# TODO Handel Errors Here
-	directory.open(packages[package_name] as String)
-	return directory.file_exists("scenario.json")
+func _input(event : InputEvent) -> void:
+	if event.is_action_pressed("ui_accept"):
+		print(get_scenarios())
 
 
-func get_scenario(package_name : String):
-	# TODO Handel Errors Here
+func get_scenarios() -> Dictionary:
+	var scenarios : Dictionary = {}
 	
-	var path : String = packages[package_name] + "/scenario.json"
-	var err := file.open(path, _File.READ)
 	
-	if err:
+	for pack in packages:
+		var path := packages[pack] as String + "/scenario.json"
+		var err := file.open(path, File.READ)
+		
+		if err and err != ERR_FILE_NOT_FOUND:
+			var msg := "Error on reading file '" + path + "' Godot Error Code: " + String(err)
+			Log.error(msg)
+			push_error(msg)
+			continue
+		
+		var text := file.get_as_text()
 		file.close()
-		return null
+		
+		var json : JSONParseResult = JSON.parse(text)
+		var dic : Dictionary = json.result
+		
+		scenarios[pack] = dic
 	
-	var res := JSON.parse(file.get_as_text())
-	file.close()
-	
-	if res.error:
-		return null
-	
-	var dic : Dictionary = res.result()
-	
-	return dic
+	return scenarios
 
 
