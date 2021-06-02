@@ -61,9 +61,11 @@ func check_directories_for_packages() -> void:
 
 func check_packages_for_scenarios() -> void:
 	scenarios.clear()
+	var err : int
+	var path : String
 	for pack in packages:
-		var path := packages[pack] as String + "/scenario.json"
-		var err := file.open(path, File.READ)
+		path = packages[pack] as String + "/scenario.json"
+		err = file.open(path, File.READ)
 		
 		if err and err != ERR_FILE_NOT_FOUND:
 			var msg := "Error on reading file '" + path + "' Godot Error Code: " + String(err)
@@ -83,9 +85,7 @@ func check_packages_for_scenarios() -> void:
 			push_error(msg)
 			continue
 		
-		var dic : Dictionary = json.result
-		
-		scenarios[pack] = dic
+		scenarios[pack] = json.result
 
 
 
