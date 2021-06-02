@@ -2,8 +2,8 @@
 
 [ext_resource path="res://aban/game_select/game_select_font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://aban/game_select/new_game_card/assets/norm_style.tres" type="StyleBox" id=2]
+[ext_resource path="res://aban/game_select/new_game_card/create_story_game_panel/create_game.tscn" type="PackedScene" id=3]
 [ext_resource path="res://aban/game_select/new_game_card/panel.gd" type="Script" id=4]
-[ext_resource path="res://aban/game_select/new_game_card/create_game_panel/create_game_panel.tscn" type="PackedScene" id=5]
 
 [node name="NewGame" type="Control"]
 anchor_right = 1.0
@@ -74,4 +74,4 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="CreateGame" parent="Margin/AspectRatio/Panel" instance=ExtResource( 5 )]
+[node name="CanvasLayer" parent="Margin/AspectRatio/Panel" instance=ExtResource( 3 )]

@@ -47,7 +47,7 @@ func _on_Panel_gui_input(event : InputEvent) -> void:
 	elif event is InputEventMouseButton:
 		if event.button_index == 1:
 			if event.is_pressed():
-				$CreateGame.pop()
+				print("TODO: pop create story game panel")
 
 
 func signal_connection_err_msg(signal_name : String, error_code : int) -> String:

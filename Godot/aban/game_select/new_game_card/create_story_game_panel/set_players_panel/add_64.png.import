@@ -1,0 +1,13 @@
+[remap]
+
+importer="image"
+type="Image"
+path="res://.import/add_64.png-f61fd011a7d7e352b331a3accf499da3.image"
+
+[deps]
+
+source_file="res://aban/game_select/new_game_card/create_story_game_panel/set_players_panel/add_64.png"
+dest_files=[ "res://.import/add_64.png-f61fd011a7d7e352b331a3accf499da3.image" ]
+
+[params]
+
