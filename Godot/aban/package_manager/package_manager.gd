@@ -16,7 +16,7 @@ var rust := preload("res://aban/lib/package_manager.gdns").new()
 
 func _ready() -> void:
 	check_directories_for_packages()
-	set_scenarios()
+	check_packages_for_scenarios()
 	print(packages)
 	print(scenarios)
 
@@ -25,7 +25,7 @@ func _exit_tree() -> void:
 	pass
 
 
-func  check_directories_for_packages() -> void:
+func check_directories_for_packages() -> void:
 	packages.clear()
 	for dir in packages_directories:
 		var err : int = 0
@@ -65,7 +65,7 @@ func  check_directories_for_packages() -> void:
 		directory.list_dir_end()
 
 
-func set_scenarios() -> void:
+func check_packages_for_scenarios() -> void:
 	scenarios.clear()
 	for pack in packages:
 		var path := packages[pack] as String + "/scenario.json"
