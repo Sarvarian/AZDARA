@@ -17,12 +17,6 @@ var rust := preload("res://aban/lib/package_manager.gdns").new()
 func _ready() -> void:
 	check_directories_for_packages()
 	check_packages_for_scenarios()
-	print(packages)
-	print(scenarios)
-
-
-func _exit_tree() -> void:
-	pass
 
 
 func check_directories_for_packages() -> void:
