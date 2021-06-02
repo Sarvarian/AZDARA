@@ -8,6 +8,7 @@ const packages_directories : Array = [
 
 
 var packages : Dictionary = {}
+var scenarios : Dictionary = {}
 var directory : Directory = Directory.new()
 var file : File = File.new()
 var rust := preload("res://aban/lib/package_manager.gdns").new()
@@ -15,7 +16,9 @@ var rust := preload("res://aban/lib/package_manager.gdns").new()
 
 func _ready() -> void:
 	check_directories_for_packages()
+	set_scenarios()
 	print(packages)
+	print(scenarios)
 
 
 func _exit_tree() -> void:
@@ -23,9 +26,9 @@ func _exit_tree() -> void:
 
 
 func  check_directories_for_packages() -> void:
-	var err : int = 0
-	
+	packages.clear()
 	for dir in packages_directories:
+		var err : int = 0
 		
 		# Create directory if not exist
 		if not directory.dir_exists(dir):
@@ -34,6 +37,7 @@ func  check_directories_for_packages() -> void:
 				var msg : String = "Creating Packages Directory at " + dir + " Failed With Godot Error Code: " + String(err)
 				Log.error(msg)
 				push_error(msg)
+				continue
 		
 		# Open directory
 		err = directory.open(dir)
@@ -41,6 +45,7 @@ func  check_directories_for_packages() -> void:
 			var msg : String = "Opening Directory '" + dir + "' Failed With Godot Error Code: " + String(err)
 			Log.error(msg)
 			push_error(msg)
+			continue
 		
 		# Setup directory fo iteration
 		err = directory.list_dir_begin(true, false)
@@ -48,6 +53,7 @@ func  check_directories_for_packages() -> void:
 			var msg : String = "'" + dir + "'.list_dir_begin(true, false) Failed With Godot Error Code: " + String(err)
 			Log.error(msg)
 			push_error(msg)
+			continue
 		
 		# Iterate and add subdirectories to packages
 		var name := directory.get_next()
@@ -59,16 +65,8 @@ func  check_directories_for_packages() -> void:
 		directory.list_dir_end()
 
 
-
-func _input(event : InputEvent) -> void:
-	if event.is_action_pressed("ui_accept"):
-		print(get_scenarios())
-
-
-func get_scenarios() -> Dictionary:
-	var scenarios : Dictionary = {}
-	
-	
+func set_scenarios() -> void:
+	scenarios.clear()
 	for pack in packages:
 		var path := packages[pack] as String + "/scenario.json"
 		var err := file.open(path, File.READ)
@@ -83,10 +81,36 @@ func get_scenarios() -> Dictionary:
 		file.close()
 		
 		var json : JSONParseResult = JSON.parse(text)
+		err = json.error # TODO json error handling
+		if err:
+			var parse_err := "Line: " + String(json.error_line) + " Error: " + json.error_string
+			var msg := "Error on parsing json from file '" + path + "' Godot Error Code: " + String(err) + "\n" + parse_err
+			Log.error(msg)
+			push_error(msg)
+			continue
+		
 		var dic : Dictionary = json.result
 		
 		scenarios[pack] = dic
-	
-	return scenarios
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
