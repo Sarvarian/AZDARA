@@ -2,7 +2,7 @@ mod save_data;
 
 use gdnative::prelude::*;
 
-type Owner = Object;
+type Owner = Reference;
 
 #[derive(NativeClass)]
 #[inherit(Owner)]
