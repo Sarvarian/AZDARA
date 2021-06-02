@@ -1,4 +1,4 @@
-class_name MapBase
+class_name LevelBase
 extends Viewport
 
 
