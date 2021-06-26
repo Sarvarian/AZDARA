@@ -21,10 +21,11 @@ impl AlertMessage {
         if self.time < 0f32 {
             owner.queue_free();
         } else if self.time < self.mm {
+            let modulate = owner.modulate();
             owner.set_modulate(Color {
-                r: 1f32,
-                g: 1f32,
-                b: 1f32,
+                r: modulate.r,
+                g: modulate.g,
+                b: modulate.b,
                 a: (self.time / self.mm),
             })
         }

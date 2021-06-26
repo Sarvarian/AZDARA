@@ -8,6 +8,7 @@ bg_color = Color( 0, 0, 0, 0 )
 [node name="CanvasLayer" type="CanvasLayer"]
 
 [node name="CreateGamePanel" type="Panel" parent="."]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 1.18921
@@ -21,6 +22,7 @@ __meta__ = {
 [node name="Assests" type="Node" parent="CreateGamePanel"]
 
 [node name="GameName" type="LineEdit" parent="CreateGamePanel/Assests"]
+visible = false
 margin_top = 1.18921
 margin_right = 58.0
 margin_bottom = 25.1892
