@@ -107,9 +107,10 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Close" type="Button" parent="Control/AspectRatio"]
-margin_left = 10.6
-margin_right = 40.6
+[node name="Close" type="Button" parent="Control"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -30.0
 margin_bottom = 30.0
 focus_mode = 0
 button_mask = 7
@@ -119,4 +120,4 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[connection signal="pressed" from="Control/AspectRatio/Close" to="Control" method="_on_Close_pressed"]
+[connection signal="pressed" from="Control/Close" to="Control" method="_on_Close_pressed"]

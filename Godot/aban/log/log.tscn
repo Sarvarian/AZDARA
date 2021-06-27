@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://aban/log/log.gd" type="Script" id=1]
 [ext_resource path="res://aban/lib/log.gdns" type="Script" id=2]
-[ext_resource path="res://aban/log/console/console.tscn" type="PackedScene" id=3]
 [ext_resource path="res://aban/log/check_azdara_lib/check_azdara_lib.tscn" type="PackedScene" id=4]
 [ext_resource path="res://aban/log/console/console_bold_font.tres" type="DynamicFont" id=5]
 [ext_resource path="res://aban/log/console/console_normal_font.tres" type="DynamicFont" id=6]
@@ -13,13 +12,13 @@
 script = ExtResource( 1 )
 
 [node name="Rust" type="CanvasLayer" parent="."]
+layer = 100
 script = ExtResource( 2 )
 font_bold = ExtResource( 5 )
+font_italics = ExtResource( 8 )
 font_normal = ExtResource( 6 )
 font_bold_italics = ExtResource( 7 )
-font_italics = ExtResource( 8 )
 
-[node name="Console" parent="." instance=ExtResource( 3 )]
-
-[node name="AZDARA_PopError" parent="Console" instance=ExtResource( 4 )]
+[node name="AZDARA_PopError" parent="Rust" instance=ExtResource( 4 )]
 margin_right = 149.0
+dialog_text = "azdara lib dosn't find!"

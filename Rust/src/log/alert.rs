@@ -40,7 +40,7 @@ impl Alert {
         Alert {
             font: None,
             root: root.into_shared(),
-            vbox: vbox,
+            vbox,
         }
     }
 
