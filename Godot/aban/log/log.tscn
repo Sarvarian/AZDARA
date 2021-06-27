@@ -14,10 +14,10 @@ script = ExtResource( 1 )
 [node name="Rust" type="CanvasLayer" parent="."]
 layer = 100
 script = ExtResource( 2 )
-font_bold = ExtResource( 5 )
+font_bold_italics = ExtResource( 7 )
 font_italics = ExtResource( 8 )
 font_normal = ExtResource( 6 )
-font_bold_italics = ExtResource( 7 )
+font_bold = ExtResource( 5 )
 
 [node name="AZDARA_PopError" parent="Rust" instance=ExtResource( 4 )]
 margin_right = 149.0

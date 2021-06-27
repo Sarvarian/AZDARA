@@ -68,7 +68,7 @@ impl Console {
         }
     }
 
-    pub fn set_fonts(
+    pub unsafe fn set_fonts(
         &mut self,
         font_mono: &Option<Ref<DynamicFont, Shared>>,
         font_bold_italics: &Option<Ref<DynamicFont, Shared>>,
@@ -91,29 +91,27 @@ impl Console {
         &self.close
     }
 
-    pub fn open(&mut self) {
-        unsafe {
-            self.root.assume_safe().set_visible(true);
-        }
+    pub fn get_wall(&self) -> &Ref<RichTextLabel, Shared> {
+        &self.wall
     }
 
-    pub fn close(&mut self) {
-        unsafe {
-            let root = self.root.assume_safe();
-            root.set_visible(false);
-            root.release_focus();
-        }
+    pub unsafe fn open(&mut self) {
+        self.root.assume_safe().set_visible(true);
+    }
+
+    pub unsafe fn close(&mut self) {
+        let root = self.root.assume_safe();
+        root.set_visible(false);
+        root.release_focus();
     }
 }
 
-fn set_font(
+unsafe fn set_font(
     wall: &mut Ref<RichTextLabel, Shared>,
     name: impl Into<GodotString>,
     font: &Option<Ref<DynamicFont, Shared>>,
 ) {
     if let Some(font) = font {
-        unsafe {
-            wall.assume_safe().add_font_override(name, font);
-        }
+        wall.assume_safe().add_font_override(name, font);
     }
 }

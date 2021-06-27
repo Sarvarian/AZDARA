@@ -1,7 +1,7 @@
 use gdnative::{
-    api::{Control, DynamicFont, VBoxContainer},
+    api::{Control, DynamicFont, Label, VBoxContainer},
     core_types::{Color, GodotString},
-    prelude::{NativeClass, Shared},
+    prelude::{NativeClass, Shared, Unique},
     Ref,
 };
 
@@ -15,6 +15,7 @@ pub struct Alert {
 
 impl Alert {
     pub fn new() -> Self {
+        // Create root node.
         let root = Control::new();
         root.set_anchor(0, 0.03, false, true);
         root.set_anchor(1, 0.05, false, true);
@@ -25,6 +26,7 @@ impl Alert {
         root.set_mouse_filter(2);
         root.set_name("Alert");
 
+        // Create vertical box container.
         let vbox = VBoxContainer::new();
         vbox.set_anchor(2, 1.0, false, true);
         vbox.set_anchor(3, 1.0, false, true);
@@ -34,9 +36,11 @@ impl Alert {
         vbox.set_alignment(2);
         vbox.set_name("VBox");
 
+        // Add vbox as child of root
         let vbox = vbox.into_shared();
         root.add_child(vbox, false);
 
+        // Create final object.
         Alert {
             font: None,
             root: root.into_shared(),
@@ -52,15 +56,28 @@ impl Alert {
         &self.root
     }
 
-    pub fn alert(&mut self, msg: impl Into<GodotString>, color: Color) {
+    pub fn get_vbox(&self) -> &Ref<VBoxContainer, Shared> {
+        &self.vbox
+    }
+
+    pub fn create_alert_message(
+        &mut self,
+        msg: impl Into<GodotString>,
+        color: Color,
+    ) -> Ref<Label, Unique> {
+        // Create instance.
         let label = AlertMessage::new_instance();
+        // Get base node.
         let label = label.into_base();
+        // Set the message
         label.set_text(msg);
+        // Set the color.
         label.set_modulate(color);
+        // Set font if we have one.
         if let Some(font) = &self.font {
             label.add_font_override("font", font);
         }
-
-        unsafe { self.vbox.assume_safe().add_child(label, false) }
+        // Return node
+        label
     }
 }

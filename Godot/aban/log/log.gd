@@ -11,12 +11,8 @@ func _ready() -> void:
 	else:
 		$Rust/AZDARA_PopError.queue_free()
 		$Rust.remove_child($Rust/AZDARA_PopError)
+		$Rust.error("Welcome to AZDARA!")
 
 
 func error(msg : String) -> void:
 	$Rust.error(msg)
-#	var datetime : String = $Rust.get_current_datetime()
-#	var fullmsg = datetime + " " + msg
-#	$Rust.log_without_time(fullmsg)
-#	$Console.log_put(datetime, msg, Color.red)
-#	printerr(fullmsg)
