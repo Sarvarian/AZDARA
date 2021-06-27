@@ -1,6 +1,6 @@
 use gdnative::{api::File, core_types::GodotError, prelude::Unique, Ref};
 
-const LOG_PATH: &str = "user://azdara.log";
+pub const LOG_PATH: &str = "user://azdara.log";
 
 pub struct FileLog {
     file: Ref<File, Unique>,
@@ -11,11 +11,11 @@ impl FileLog {
         let file = File::new();
         file.open(LOG_PATH, 2)?;
         let mut file_log = FileLog { file };
-        file_log.log_with_time("AZDARA LOG START".to_string());
+        file_log.log_with_time("AZDARA LOG START");
         Ok(file_log)
     }
 
-    pub fn log_with_time(&mut self, msg: String) {
+    pub fn log_with_time(&mut self, msg: &str) {
         self.file.seek_end(0);
         let msg = format!("{} {}\n", chrono::Local::now().to_string(), msg);
         self.file.store_string(msg);
@@ -30,7 +30,7 @@ impl FileLog {
 
 impl Drop for FileLog {
     fn drop(&mut self) {
-        self.log_with_time("AZDARA LOG END".to_string());
+        self.log_with_time("AZDARA LOG END");
         self.file.close();
     }
 }

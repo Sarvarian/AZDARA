@@ -59,6 +59,19 @@ impl Log {
         owner.add_child(self.console.get_root(), true);
         connect_close_button_to_owner(self, owner);
         self.console.close();
+
+        // Check file_log.
+        if let Err(err) = self.file_log {
+            self.error(
+                owner,
+                format!(
+                    "Open File for Log at '{}' Failed with GodotError '{}'!!!",
+                    file_log::LOG_PATH,
+                    err
+                )
+                .into(),
+            );
+        }
     }
 
     #[export]
@@ -108,6 +121,11 @@ impl Log {
         self.alert.get_vbox().assume_safe().add_child(node, false);
     }
 
+    unsafe fn alert_str(&mut self, msg: &str, color: Color) {
+        let node = self.alert.create_alert_message(msg, color);
+        self.alert.get_vbox().assume_safe().add_child(node, false);
+    }
+
     #[export]
     fn error(&mut self, owner: &Owner, msg: GodotString) {
         // Get time.
@@ -137,13 +155,13 @@ impl Log {
     #[export]
     pub unsafe fn log_put(
         &mut self,
-        owner: &Owner,
+        _: &Owner,
         datetime: GodotString,
         msg: GodotString,
         color: Color,
     ) {
         // Alert.
-        self.alert(owner, msg.clone(), color);
+        self.alert_str(msg.to_string().as_str(), color);
 
         // Put on console.
         let wall = self.console.get_wall().assume_safe();
@@ -155,6 +173,17 @@ impl Log {
         wall.push_color(color);
         let _ = wall.append_bbcode(msg);
         wall.pop();
+    }
+
+    #[export]
+    pub unsafe fn welcome_message(&mut self, owner: &Owner, msg: GodotString, color: Color) {
+        let msg_string = msg.to_string();
+        let msg_str = msg_string.as_str();
+        if let Ok(file_log) = &mut self.file_log {
+            file_log.log_with_time(msg_str);
+        }
+        self.alert_str(msg_str, color);
+        self.put(owner, msg, color)
     }
 }
 

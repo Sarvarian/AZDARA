@@ -67,12 +67,12 @@ impl Alert {
     ) -> Ref<Label, Unique> {
         // Create instance.
         let label = AlertMessage::new_instance();
-        // Get base node.
+        // Get base label.
         let label = label.into_base();
-        // Set the message
+        // Setup label
         label.set_text(msg);
-        // Set the color.
         label.set_modulate(color);
+        label.set_autowrap(true);
         // Set font if we have one.
         if let Some(font) = &self.font {
             label.add_font_override("font", font);

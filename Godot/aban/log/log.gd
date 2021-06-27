@@ -11,7 +11,7 @@ func _ready() -> void:
 	else:
 		$Rust/AZDARA_PopError.queue_free()
 		$Rust.remove_child($Rust/AZDARA_PopError)
-		$Rust.error("Welcome to AZDARA!")
+		$Rust.welcome_message("Welcome to AZDARA!", Color(1.0, 0.1, 0.6))
 
 
 func error(msg : String) -> void:
