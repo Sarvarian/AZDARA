@@ -9,6 +9,9 @@ edition = "2018"
 [lib]
 crate-type = ["cdylib"]
 
+# [target.aarch64-linux-android]
+# linker = "$ANDROID_HOME/ndk/22.1.7171670/toolchains/llvm/prebuilt/windows-x86_64/bin/aarch64-linux-android29-clang"
+
 [dependencies]
 gdnative = "0.9.3"
 chrono = "0.4.19"
